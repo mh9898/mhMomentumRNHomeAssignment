@@ -10,10 +10,16 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Prebuild native projects (iOS and Android)
 
    ```bash
-   npx expo start
+   npx expo prebuild
+   ```
+
+3. Start the app
+
+   ```bash
+   npx expo run
    ```
 
 In the output, you'll find options to open the app in a
@@ -25,15 +31,38 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+## Features
 
-When you're ready, run:
+This project includes the following features and implementations:
 
-```bash
-npm run reset-project
-```
+### State Management
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **Zustand Store** (`store/paymentStore.ts`): Global state management for payment flow
+  - Manages email, name, and promo code state
+  - Integrated with MMKV for persistent storage
+  - Includes promo code validation with 5-minute expiration
+  - Comprehensive logging utilities for debugging state and storage
+
+### Storage
+
+- **MMKV Integration** (`utils/storage.ts`): High-performance key-value storage
+  - Persistent storage for user email and name
+  - Purchase data storage helpers
+  - Storage logging utilities
+
+### Testing
+
+- **Jest Configuration**: Complete testing setup with React Native Testing Library
+  - Test files in `__tests__/` directory
+  - EmailScreen component tests
+  - Utility function tests
+  - Coverage reporting support
+
+### Scripts
+
+- `npm test` - Run tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Generate test coverage report
 
 ## Learn more
 
@@ -41,10 +70,3 @@ To learn more about developing your project with Expo, look at the following res
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
