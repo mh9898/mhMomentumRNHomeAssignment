@@ -101,7 +101,9 @@ export const usePaymentStore = create<PaymentState>()(
             console.log("State:", parsed.state);
           } catch (e) {
             console.error("Parse Error:", e);
-            console.warn("Corrupted storage data detected. Consider resetting storage.");
+            console.warn(
+              "Corrupted storage data detected. Consider resetting storage."
+            );
           }
         }
         console.log("==========================");

@@ -41,14 +41,18 @@ export default function PlanCard({
               {isDiscountActive && (
                 <Text
                   style={styles.originalPrice}
-                  accessibilityLabel={`Original price ${originalPrice.toFixed(2)} USD`}
+                  accessibilityLabel={`Original price ${originalPrice.toFixed(
+                    2
+                  )} USD`}
                 >
                   {originalPrice.toFixed(2)} USD
                 </Text>
               )}
               <Text
                 style={styles.currentPrice}
-                accessibilityLabel={`Current price ${displayPrice.toFixed(2)} USD`}
+                accessibilityLabel={`Current price ${displayPrice.toFixed(
+                  2
+                )} USD`}
               >
                 {displayPrice.toFixed(2)} USD
               </Text>
