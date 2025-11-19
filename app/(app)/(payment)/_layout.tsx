@@ -1,14 +1,28 @@
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Stack } from "expo-router";
 
-export default function PaymentLayout() {
+const PaymentLayout = () => {
+  const colors = useThemeColors();
+
   return (
     <Stack
       screenOptions={{
         headerShown: true,
-        title: "Momentum",
+        headerTitle: "Momentum",
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTintColor: colors.text,
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
       }}
     >
       <Stack.Screen name="email" />
+      <Stack.Screen name="name" />
+      <Stack.Screen name="product" />
     </Stack>
   );
-}
+};
+
+export default PaymentLayout;

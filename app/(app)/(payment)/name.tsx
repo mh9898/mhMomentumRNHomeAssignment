@@ -12,38 +12,51 @@ import AppTextInput from "../../../components/AppTextInput";
 import { Colors } from "../../../constants/theme";
 import { useThemeColors } from "../../../hooks/use-theme-colors";
 import { usePaymentStore } from "../../../store/paymentStore";
-import { isValidEmail } from "../../../utils/emailValidation";
+import { generateDiscountCode } from "../../../utils/discountCode";
+import { isValidName } from "../../../utils/nameValidation";
 
-const EmailScreen = () => {
-  const { email, setEmail, logMMKV_Zustand } = usePaymentStore();
-  const [localEmail, setLocalEmail] = useState(email);
+const NameScreen = () => {
+  const { name, setName, setPromoCode, logMMKV_Zustand } = usePaymentStore();
+  const [localName, setLocalName] = useState(name);
   const [error, setError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState(false);
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
-    // Validate email on change
-    if (localEmail.length === 0) {
+    // Validate name on change
+    if (localName.length === 0) {
       setError(null);
       setIsValid(false);
       return;
     }
 
-    if (isValidEmail(localEmail)) {
+    if (isValidName(localName)) {
       setError(null);
       setIsValid(true);
     } else {
-      setError("Please enter a valid email");
+      setError("Name must be at least 3 letters");
       setIsValid(false);
     }
-  }, [localEmail]);
+  }, [localName]);
 
   const handleContinue = () => {
-    if (isValid && isValidEmail(localEmail)) {
-      setEmail(localEmail);
+    if (isValid && isValidName(localName)) {
+      // Store the user's name locally
+      setName(localName);
+
+      // Generate discount code in format [name]_[month][lastTwoDigitsOfYear]
+      const discountCode = generateDiscountCode(localName);
+      if (__DEV__) {
+        console.log("Discount Code:", discountCode); // e.g., "johndoe_1224"
+      }
+      const createdAt = Date.now();
+      setPromoCode(discountCode, createdAt);
+
       logMMKV_Zustand();
-      router.push("./name");
+
+      // Navigate to Product screen
+      router.push("./product");
     }
   };
 
@@ -55,15 +68,14 @@ const EmailScreen = () => {
       <View style={styles.content}>
         {/* Title */}
         <Text style={styles.title}>
-          Enter your email to get your personalized Calisthenics Workout Plan
+          Enter your name to get your personalized Calisthenics Workout Plan
         </Text>
 
-        {/* Email Input */}
+        {/* Name Input */}
         <AppTextInput
-          placeholder="name@domain.com"
-          value={localEmail}
-          onChangeText={setLocalEmail}
-          keyboardType="email-address"
+          placeholder="enter your name"
+          value={localName}
+          onChangeText={setLocalName}
           autoCapitalize="none"
           autoCorrect={false}
           autoFocus
@@ -123,4 +135,4 @@ const createStyles = (colors: typeof Colors.light) => {
   });
 };
 
-export default EmailScreen;
+export default NameScreen;

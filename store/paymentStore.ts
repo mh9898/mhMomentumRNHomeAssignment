@@ -2,19 +2,28 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { storage } from "../utils/storage";
 
+// Constants
+const PROMO_CODE_VALIDITY_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
 // Create MMKV storage adapter for Zustand with logging
 const mmkvStorage = {
   getItem: (name: string): string | null => {
     const value = storage.getString(name);
-    console.log(`[MMKV] getItem("${name}") →`, value ?? null);
+    if (__DEV__) {
+      console.log(`[MMKV] getItem("${name}") →`, value ?? null);
+    }
     return value ?? null;
   },
   setItem: (name: string, value: string): void => {
-    console.log(`[MMKV] setItem("${name}") →`, value);
+    if (__DEV__) {
+      console.log(`[MMKV] setItem("${name}") →`, value);
+    }
     storage.set(name, value);
   },
   removeItem: (name: string): void => {
-    console.log(`[MMKV] removeItem("${name}")`);
+    if (__DEV__) {
+      console.log(`[MMKV] removeItem("${name}")`);
+    }
     storage.remove(name);
   },
 };
@@ -49,6 +58,7 @@ export const usePaymentStore = create<PaymentState>()(
       isDiscountActive: false,
 
       logState: () => {
+        if (!__DEV__) return;
         const state = get();
         console.log("=== Zustand Payment Store State ===");
         console.log("Email:", state.email);
@@ -60,6 +70,7 @@ export const usePaymentStore = create<PaymentState>()(
       },
 
       logMMKV: () => {
+        if (!__DEV__) return;
         const persistedData = storage.getString("payment-storage");
         console.log("=== MMKV Storage (Raw) ===");
         console.log("Key: payment-storage");
@@ -77,6 +88,7 @@ export const usePaymentStore = create<PaymentState>()(
       },
 
       logMMKV_Zustand: () => {
+        if (!__DEV__) return;
         console.log("\n🔍 === COMPREHENSIVE LOG === 🔍\n");
         (get() as PaymentStateInternal).logState();
         (get() as PaymentStateInternal).logMMKV();
@@ -104,8 +116,8 @@ export const usePaymentStore = create<PaymentState>()(
         }
 
         const now = Date.now();
-        const fiveMinutesInMs = 5 * 60 * 1000;
-        const isValid = now - promoCodeCreatedAt < fiveMinutesInMs;
+        const isValid =
+          now - promoCodeCreatedAt < PROMO_CODE_VALIDITY_DURATION_MS;
 
         set({ isDiscountActive: isValid });
       },
@@ -128,6 +140,12 @@ export const usePaymentStore = create<PaymentState>()(
         email: state.email,
         name: state.name,
       }),
+      // Check promo code validity after rehydration
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.checkPromoCodeValidity();
+        }
+      },
     }
   )
 );
