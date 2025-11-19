@@ -5,26 +5,45 @@ import { storage } from "../utils/storage";
 // Constants
 const PROMO_CODE_VALIDITY_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
-// Create MMKV storage adapter for Zustand with logging
+// Create MMKV storage adapter for Zustand with logging and error handling
 const mmkvStorage = {
   getItem: (name: string): string | null => {
-    const value = storage.getString(name);
-    if (__DEV__) {
-      console.log(`[MMKV] getItem("${name}") →`, value ?? null);
+    try {
+      const value = storage.getString(name);
+      if (__DEV__) {
+        console.log(`[MMKV] getItem("${name}") →`, value ?? null);
+      }
+      return value ?? null;
+    } catch (error) {
+      if (__DEV__) {
+        console.error(`[MMKV] Error getting item "${name}":`, error);
+      }
+      return null;
     }
-    return value ?? null;
   },
   setItem: (name: string, value: string): void => {
-    if (__DEV__) {
-      console.log(`[MMKV] setItem("${name}") →`, value);
+    try {
+      if (__DEV__) {
+        console.log(`[MMKV] setItem("${name}") →`, value);
+      }
+      storage.set(name, value);
+    } catch (error) {
+      if (__DEV__) {
+        console.error(`[MMKV] Error setting item "${name}":`, error);
+      }
     }
-    storage.set(name, value);
   },
   removeItem: (name: string): void => {
-    if (__DEV__) {
-      console.log(`[MMKV] removeItem("${name}")`);
+    try {
+      if (__DEV__) {
+        console.log(`[MMKV] removeItem("${name}")`);
+      }
+      storage.remove(name);
+    } catch (error) {
+      if (__DEV__) {
+        console.error(`[MMKV] Error removing item "${name}":`, error);
+      }
     }
-    storage.remove(name);
   },
 };
 
@@ -81,7 +100,10 @@ export const usePaymentStore = create<PaymentState>()(
             console.log("Parsed Value:", parsed);
             console.log("State:", parsed.state);
           } catch (e) {
-            console.log("Parse Error:", e);
+            console.error("Parse Error:", e);
+            console.warn(
+              "Corrupted storage data detected. Consider resetting storage."
+            );
           }
         }
         console.log("==========================");
@@ -135,13 +157,28 @@ export const usePaymentStore = create<PaymentState>()(
     {
       name: "payment-storage", // MMKV key name
       storage: createJSONStorage(() => mmkvStorage),
-      // Only persist email and name - don't persist temporary promoCode
+      // Persist email, name, promoCode, and promoCodeCreatedAt for timer persistence
       partialize: (state) => ({
         email: state.email,
         name: state.name,
+        promoCode: state.promoCode,
+        promoCodeCreatedAt: state.promoCodeCreatedAt,
       }),
       // Check promo code validity after rehydration
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          if (__DEV__) {
+            console.error("[Zustand] Rehydration error:", error);
+          }
+          // Reset to default state on rehydration error
+          return {
+            email: "",
+            name: "",
+            promoCode: null,
+            promoCodeCreatedAt: null,
+            isDiscountActive: false,
+          };
+        }
         if (state) {
           state.checkPromoCodeValidity();
         }

@@ -22,6 +22,17 @@ export const Colors = {
     buttonBackground: "#000000",
     buttonText: "#FFFFFF",
     success: "#4CAF50",
+    planCardBorder: "#2196F3",
+    radioButtonBackground: "#EFF1F5",
+    popularBannerBackground: "#568EF7",
+    popularBannerText: "#FFFFFF",
+    promoSectionBackground: "#B5D9CD",
+    promoSectionBorder: "#C8E6C9",
+    promoDashDotBackground: "#FFFFFF",
+    promoDashedLineBackground: "#75A898",
+    promoDashBackground: "#A5D6A7",
+    promoCodeInputBorder: "#75A898",
+    timerBoxBackground: "#CEEAE2",
   },
   dark: {
     text: "#ECEDEE",
@@ -36,6 +47,17 @@ export const Colors = {
     buttonBackground: "#FFFFFF",
     buttonText: "#000000",
     success: "#66BB6A",
+    planCardBorder: "#42A5F5",
+    radioButtonBackground: "#2A2D35",
+    popularBannerBackground: "#5C9DF7",
+    popularBannerText: "#FFFFFF",
+    promoSectionBackground: "#2D4A42",
+    promoSectionBorder: "#3A5A4F",
+    promoDashDotBackground: "#151718",
+    promoDashedLineBackground: "#4A7A6A",
+    promoDashBackground: "#3A6A5A",
+    promoCodeInputBorder: "#4A7A6A",
+    timerBoxBackground: "#2A4A3A",
   },
 };
 
@@ -49,12 +71,22 @@ export const Fonts = Platform.select({
     rounded: "ui-rounded",
     /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: "ui-monospace",
+    /** Custom Gothic A1 font */
+    gothicA1: "GothicA1-Regular",
+    gothicA1Medium: "GothicA1-Medium",
+    gothicA1SemiBold: "GothicA1-SemiBold",
+    gothicA1Bold: "GothicA1-Bold",
   },
   default: {
     sans: "normal",
     serif: "serif",
     rounded: "normal",
     mono: "monospace",
+    /** Custom Gothic A1 font */
+    gothicA1: "GothicA1-Regular",
+    gothicA1Medium: "GothicA1-Medium",
+    gothicA1SemiBold: "GothicA1-SemiBold",
+    gothicA1Bold: "GothicA1-Bold",
   },
   web: {
     sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
@@ -62,5 +94,10 @@ export const Fonts = Platform.select({
     rounded:
       "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    /** Custom Gothic A1 font - fallback to sans-serif on web */
+    gothicA1: "'Gothic A1', sans-serif",
+    gothicA1Medium: "'Gothic A1', sans-serif",
+    gothicA1SemiBold: "'Gothic A1', sans-serif",
+    gothicA1Bold: "'Gothic A1', sans-serif",
   },
 });
