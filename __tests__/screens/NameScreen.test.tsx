@@ -1,0 +1,190 @@
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react-native";
+import { router } from "expo-router";
+import React from "react";
+import NameScreen from "../../app/(app)/(payment)/name";
+import { usePaymentStore } from "../../store/paymentStore";
+import { generateDiscountCode } from "../../utils/discountCode";
+
+// Mock expo-router
+jest.mock("expo-router", () => ({
+  router: {
+    push: jest.fn(),
+  },
+}));
+
+// Mock Zustand store
+jest.mock("../../store/paymentStore", () => ({
+  usePaymentStore: jest.fn(),
+}));
+
+// Mock discount code generator
+jest.mock("../../utils/discountCode", () => ({
+  generateDiscountCode: jest.fn(),
+}));
+
+describe("NameScreen", () => {
+  const mockSetName = jest.fn();
+  const mockSetPromoCode = jest.fn();
+  const mockLogMMKV_Zustand = jest.fn();
+  const mockName = "";
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (usePaymentStore as unknown as jest.Mock).mockReturnValue({
+      name: mockName,
+      setName: mockSetName,
+      setPromoCode: mockSetPromoCode,
+      logMMKV_Zustand: mockLogMMKV_Zustand,
+    });
+    // Mock generateDiscountCode to return a predictable value
+    (generateDiscountCode as jest.Mock).mockReturnValue("johndoe_1224");
+  });
+
+  // Test 1: Invalid name shows error message
+  it("should display error message when name is invalid (less than 3 characters)", async () => {
+    render(<NameScreen />);
+
+    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+
+    // Enter invalid name (too short)
+    fireEvent.changeText(nameInput, "Jo");
+
+    // Wait for validation
+    await waitFor(() => {
+      expect(screen.getByText("Name must be at least 3 letters")).toBeTruthy();
+    });
+  });
+
+  // Test 2: Invalid name with non-alphabetic characters shows error
+  it("should display error message when name contains non-alphabetic characters", async () => {
+    render(<NameScreen />);
+
+    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+
+    // Enter invalid name (contains numbers)
+    fireEvent.changeText(nameInput, "John123");
+
+    // Wait for validation
+    await waitFor(() => {
+      expect(screen.getByText("Name must be at least 3 letters")).toBeTruthy();
+    });
+  });
+
+  // Test 3: Continue button is disabled when name is invalid
+  it("should disable Continue button when name is invalid", async () => {
+    render(<NameScreen />);
+
+    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const continueButton = screen.getByText(/continue/i);
+
+    // Enter invalid name
+    fireEvent.changeText(nameInput, "Jo");
+
+    // Wait for validation
+    await waitFor(() => {
+      expect(screen.getByText("Name must be at least 3 letters")).toBeTruthy();
+    });
+
+    // Get the parent TouchableOpacity to check disabled state
+    const touchableOpacity = continueButton.parent?.parent;
+    const isDisabled =
+      touchableOpacity?.props?.disabled ||
+      touchableOpacity?.props?.accessibilityState?.disabled;
+
+    // Button should be disabled
+    expect(isDisabled).toBeTruthy();
+
+    // Try to press it - should not navigate
+    fireEvent.press(continueButton);
+    expect(router.push).not.toHaveBeenCalled();
+    expect(mockSetName).not.toHaveBeenCalled();
+  });
+
+  // Test 4: Valid name enables Continue button and navigates/stores name
+  it("should enable Continue button, store name, generate discount code, and navigate when name is valid", async () => {
+    render(<NameScreen />);
+
+    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const continueButton = screen.getByText(/continue/i);
+    const validName = "John Doe";
+
+    // Enter valid name
+    fireEvent.changeText(nameInput, validName);
+
+    // Wait for validation to pass
+    await waitFor(() => {
+      expect(screen.queryByText("Name must be at least 3 letters")).toBeNull();
+    });
+
+    // Get the parent TouchableOpacity to check disabled state
+    const touchableOpacity = continueButton.parent?.parent;
+    const isDisabled =
+      touchableOpacity?.props?.disabled ||
+      touchableOpacity?.props?.accessibilityState?.disabled;
+
+    // Button should be enabled
+    expect(isDisabled).toBeFalsy();
+
+    // Press Continue button
+    fireEvent.press(continueButton);
+
+    // Should save name to store
+    expect(mockSetName).toHaveBeenCalledWith(validName);
+
+    // Should generate discount code
+    expect(generateDiscountCode).toHaveBeenCalledWith(validName);
+
+    // Should set promo code with generated code and timestamp
+    expect(mockSetPromoCode).toHaveBeenCalledWith(
+      "johndoe_1224",
+      expect.any(Number)
+    );
+
+    // Should log MMKV/Zustand
+    expect(mockLogMMKV_Zustand).toHaveBeenCalled();
+
+    // Should navigate to product screen
+    expect(router.push).toHaveBeenCalledWith("./product");
+  });
+
+  // Test 5: Valid name with spaces should pass validation
+  it("should accept valid name with spaces", async () => {
+    render(<NameScreen />);
+
+    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const continueButton = screen.getByText(/continue/i);
+    const validNameWithSpaces = "Mary Jane Watson";
+
+    fireEvent.changeText(nameInput, validNameWithSpaces);
+
+    // Wait for validation to pass
+    await waitFor(() => {
+      expect(screen.queryByText("Name must be at least 3 letters")).toBeNull();
+    });
+
+    // Button should be enabled
+    const touchableOpacity = continueButton.parent?.parent;
+    const isDisabled =
+      touchableOpacity?.props?.disabled ||
+      touchableOpacity?.props?.accessibilityState?.disabled;
+    expect(isDisabled).toBeFalsy();
+  });
+
+  // Test 8: Empty name should not show error initially
+  it("should not show error message when name input is empty", () => {
+    render(<NameScreen />);
+
+    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+
+    // Input should be empty initially
+    expect(nameInput.props.value).toBe("");
+
+    // Should not show error message
+    expect(screen.queryByText("Name must be at least 3 letters")).toBeNull();
+  });
+});
