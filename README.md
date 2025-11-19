@@ -50,11 +50,68 @@ This project includes the following features and implementations:
   - Purchase data storage helpers
   - Storage logging utilities
 
+### Theme System
+
+- **Theme Configuration** (`constants/theme.ts`): Complete light/dark mode support
+  - Color definitions for light and dark themes
+  - Platform-specific font configurations
+  - Theme hooks (`hooks/use-theme-colors.ts`, `hooks/use-color-scheme.ts`) for accessing theme colors
+  - Automatic color scheme detection based on system preferences
+
+### UI Components
+
+- **AppButton** (`components/AppButton.tsx`): Reusable themed button component
+
+  - Supports disabled states with visual feedback
+  - Optional arrow indicator
+  - Fully accessible with proper labels and states
+  - Automatically adapts to light/dark theme
+
+- **AppTextInput** (`components/AppTextInput.tsx`): Themed text input component
+  - Real-time validation with error states
+  - Visual feedback for valid/invalid input
+  - Error message display
+  - Theme-aware styling
+
+### Screens
+
+- **Email Screen** (`app/(app)/(payment)/email.tsx`): Email collection screen
+
+  - Email validation with real-time feedback
+  - Privacy statement display
+  - Navigation to Name screen
+
+- **Name Screen** (`app/(app)/(payment)/name.tsx`): Name collection and discount code generation
+
+  - Name validation (minimum 3 letters, alphabetic only)
+  - Personalized discount code generation (format: `name_monthyear`)
+  - Privacy statement display
+  - Navigation to Product screen
+
+- **Product Screen** (`app/(app)/(payment)/product.tsx`): Product information display
+  - Displays user name and discount code
+  - Shows discount code active status
+  - Themed UI consistent with app design
+
+### Utilities
+
+- **Discount Code Generator** (`utils/discountCode.ts`): Generates personalized discount codes
+
+  - Format: `name_monthyear` (e.g., `johndoe_1224`)
+  - Sanitizes user input (removes spaces and special characters)
+  - Uses current month and year for code generation
+
+- **Name Validation** (`utils/nameValidation.ts`): Validates name input format
+  - Minimum 3 characters requirement
+  - Alphabetic characters and spaces only
+  - Trims whitespace automatically
+
 ### Testing
 
 - **Jest Configuration**: Complete testing setup with React Native Testing Library
   - Test files in `__tests__/` directory
   - EmailScreen component tests
+  - NameScreen component tests
   - Utility function tests
   - Coverage reporting support
 
