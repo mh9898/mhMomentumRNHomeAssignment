@@ -54,7 +54,7 @@ const createStyles = (colors: typeof Colors.light, disabled: boolean) => {
   return StyleSheet.create({
     button: {
       backgroundColor: colors.buttonBackground,
-      borderRadius: 12,
+      borderRadius: 50,
       paddingVertical: 16,
       paddingHorizontal: 24,
       flexDirection: "row",

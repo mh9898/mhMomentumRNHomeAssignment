@@ -50,11 +50,27 @@ This project includes the following features and implementations:
   - Purchase data storage helpers
   - Storage logging utilities
 
+### Custom Hooks
+
+- **useProductPricing** (`hooks/use-product-pricing.ts`): Product pricing calculation hook
+
+  - Calculates display price based on discount state
+  - Computes daily price breakdown (28-day plan)
+  - Returns original price, discounted price, and current display price
+  - Memoized for performance optimization
+
+- **usePromoCode** (`hooks/use-promo-code.ts`): Promo code management hook
+  - Manages 5-minute validity timer with real-time countdown
+  - Formats timer display (MM:SS) with zero-padding
+  - Checks promo code validity and updates discount state
+  - Returns promo code, discount status, and formatted time remaining
+
 ### Theme System
 
 - **Theme Configuration** (`constants/theme.ts`): Complete light/dark mode support
   - Color definitions for light and dark themes
-  - Platform-specific font configurations
+  - Custom Gothic A1 font family (Regular, Medium, SemiBold, Bold)
+  - Extended color palette for plan cards, promo sections, timers, and UI elements
   - Theme hooks (`hooks/use-theme-colors.ts`, `hooks/use-color-scheme.ts`) for accessing theme colors
   - Automatic color scheme detection based on system preferences
 
@@ -68,10 +84,29 @@ This project includes the following features and implementations:
   - Automatically adapts to light/dark theme
 
 - **AppTextInput** (`components/AppTextInput.tsx`): Themed text input component
+
   - Real-time validation with error states
   - Visual feedback for valid/invalid input
   - Error message display
   - Theme-aware styling
+
+- **PlanCard** (`components/PlanCard.tsx`): Product plan display component
+
+  - Displays 4-week plan pricing with original and discounted prices
+  - Shows daily price breakdown
+  - Visual discount indication with strikethrough pricing
+  - "Most Popular" banner display
+  - Radio button selection indicator
+  - Fully accessible with proper ARIA labels
+  - Theme-aware styling with custom colors
+
+- **PromoCodeSection** (`components/PromoCodeSection.tsx`): Promo code display component
+  - Displays applied promo code with checkmark indicator
+  - Real-time countdown timer showing remaining validity time
+  - Dashed border design with decorative elements
+  - Timer formatting (MM:SS) with proper accessibility labels
+  - Conditional rendering based on discount active state
+  - Theme-aware styling with custom promo section colors
 
 ### Screens
 
@@ -88,9 +123,13 @@ This project includes the following features and implementations:
   - Privacy statement display
   - Navigation to Product screen
 
-- **Product Screen** (`app/(app)/(payment)/product.tsx`): Product information display
-  - Displays user name and discount code
-  - Shows discount code active status
+- **Product Screen** (`app/(app)/(payment)/product.tsx`): Product selection and pricing display
+  - Displays plan card with pricing information
+  - Shows promo code section when discount is active
+  - Real-time price updates based on discount status
+  - Daily price calculation and display
+  - Keyboard-aware scrolling layout
+  - Integrated with pricing and promo code hooks
   - Themed UI consistent with app design
 
 ### Utilities
@@ -112,6 +151,12 @@ This project includes the following features and implementations:
   - Test files in `__tests__/` directory
   - EmailScreen component tests
   - NameScreen component tests
+  - ProductScreen component tests
+    - Plan card rendering and pricing display
+    - Promo code section conditional rendering
+    - Discount state handling
+    - Timer display formatting
+    - Theme integration
   - Utility function tests
   - Coverage reporting support
 

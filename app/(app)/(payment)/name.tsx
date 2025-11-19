@@ -12,11 +12,10 @@ import AppTextInput from "../../../components/AppTextInput";
 import { Colors } from "../../../constants/theme";
 import { useThemeColors } from "../../../hooks/use-theme-colors";
 import { usePaymentStore } from "../../../store/paymentStore";
-import { generateDiscountCode } from "../../../utils/discountCode";
 import { isValidName } from "../../../utils/nameValidation";
 
 const NameScreen = () => {
-  const { name, setName, setPromoCode, logMMKV_Zustand } = usePaymentStore();
+  const { name, setName, logMMKV_Zustand } = usePaymentStore();
   const [localName, setLocalName] = useState(name);
   const [error, setError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState(false);
@@ -43,15 +42,8 @@ const NameScreen = () => {
   const handleContinue = () => {
     if (isValid && isValidName(localName)) {
       // Store the user's name locally
+      // Promo code will be generated automatically by usePromoCode hook
       setName(localName);
-
-      // Generate discount code in format [name]_[month][lastTwoDigitsOfYear]
-      const discountCode = generateDiscountCode(localName);
-      if (__DEV__) {
-        console.log("Discount Code:", discountCode); // e.g., "johndoe_1224"
-      }
-      const createdAt = Date.now();
-      setPromoCode(discountCode, createdAt);
 
       logMMKV_Zustand();
 

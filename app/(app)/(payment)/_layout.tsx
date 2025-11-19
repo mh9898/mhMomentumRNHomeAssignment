@@ -9,6 +9,7 @@ const PaymentLayout = () => {
       screenOptions={{
         headerShown: true,
         headerTitle: "Momentum",
+        headerBackButtonDisplayMode: "minimal",
         headerStyle: {
           backgroundColor: colors.background,
         },
