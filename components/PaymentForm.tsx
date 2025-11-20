@@ -16,6 +16,7 @@ interface PaymentFormProps {
   onCVVChange: (text: string) => void;
   onNameOnCardChange: (text: string) => void;
   onInputFocus: () => void;
+  isExpiryDateInvalid?: boolean;
 }
 
 export default function PaymentForm({
@@ -28,9 +29,13 @@ export default function PaymentForm({
   onCVVChange,
   onNameOnCardChange,
   onInputFocus,
+  isExpiryDateInvalid = false,
 }: PaymentFormProps) {
   const colors = useThemeColors();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(
+    () => createStyles(colors, isExpiryDateInvalid),
+    [colors, isExpiryDateInvalid]
+  );
 
   return (
     <View>
@@ -56,7 +61,10 @@ export default function PaymentForm({
           onChangeText={onExpiryDateChange}
           keyboardType="numeric"
           maxLength={5}
-          style={styles.halfInput}
+          style={[
+            styles.halfInput,
+            isExpiryDateInvalid && styles.expiryInputInvalid,
+          ]}
           onFocus={onInputFocus}
         />
         <AppTextInput
@@ -83,7 +91,10 @@ export default function PaymentForm({
   );
 }
 
-const createStyles = (colors: typeof Colors.light) => {
+const createStyles = (
+  colors: typeof Colors.light,
+  isExpiryDateInvalid: boolean
+) => {
   return StyleSheet.create({
     cardNumberContainer: {
       position: "relative",
@@ -138,6 +149,11 @@ const createStyles = (colors: typeof Colors.light) => {
       borderRadius: 8,
       paddingHorizontal: 16,
       backgroundColor: colors.background,
+    },
+    expiryInputInvalid: {
+      backgroundColor: colors.errorBackground,
+      borderColor: colors.error,
+      borderBottomColor: colors.error,
     },
   });
 };

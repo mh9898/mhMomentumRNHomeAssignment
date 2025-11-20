@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -25,6 +25,7 @@ const CheckoutScreen = () => {
   const { checkoutPriceSnapshot, checkoutDiscountActive } = usePaymentStore();
 
   const scrollViewRef = useRef<ScrollView>(null);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
     formState,
@@ -33,6 +34,8 @@ const CheckoutScreen = () => {
     setCvv,
     setNameOnCard,
     isFormValid,
+    isExpiryDateInvalid,
+    isLoading,
     handleBuyNow,
   } = usePaymentForm();
 
@@ -44,10 +47,24 @@ const CheckoutScreen = () => {
 
   const discountAmount = lockedDiscountActive ? originalPrice - lockedPrice : 0;
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleInputFocus = () => {
+    // Clear any existing timeout before setting a new one
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
     // Scroll to show the input when focused
-    setTimeout(() => {
+    scrollTimeoutRef.current = setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
+      scrollTimeoutRef.current = null;
     }, 100);
   };
 
@@ -89,10 +106,15 @@ const CheckoutScreen = () => {
               onCVVChange={setCvv}
               onNameOnCardChange={setNameOnCard}
               onInputFocus={handleInputFocus}
+              isExpiryDateInvalid={isExpiryDateInvalid}
             />
 
             <View style={styles.buttonContainer}>
-              <BuyNowButton onPress={handleBuyNow} disabled={!isFormValid} />
+              <BuyNowButton
+                onPress={handleBuyNow}
+                disabled={!isFormValid}
+                loading={isLoading}
+              />
             </View>
           </View>
         </View>
