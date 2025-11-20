@@ -22,6 +22,18 @@ const PaymentLayout = () => {
       <Stack.Screen name="email" />
       <Stack.Screen name="name" />
       <Stack.Screen name="product" />
+      <Stack.Screen
+        name="checkout"
+        options={{
+          headerTitle: "Complete Checkout",
+        }}
+      />
+      <Stack.Screen
+        name="thank-you"
+        options={{
+          headerBackVisible: false,
+        }}
+      />
     </Stack>
   );
 };

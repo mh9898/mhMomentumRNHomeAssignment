@@ -41,6 +41,7 @@ This project includes the following features and implementations:
   - Manages email, name, and promo code state
   - Integrated with MMKV for persistent storage
   - Includes promo code validation with 5-minute expiration
+  - Checkout price snapshot functionality to lock prices during checkout
   - Comprehensive logging utilities for debugging state and storage
 
 ### Storage
@@ -60,10 +61,18 @@ This project includes the following features and implementations:
   - Memoized for performance optimization
 
 - **usePromoCode** (`hooks/use-promo-code.ts`): Promo code management hook
+
   - Manages 5-minute validity timer with real-time countdown
   - Formats timer display (MM:SS) with zero-padding
   - Checks promo code validity and updates discount state
   - Returns promo code, discount status, and formatted time remaining
+
+- **usePaymentForm** (`hooks/use-payment-form.ts`): Payment form management hook
+  - Manages credit card form state (card number, expiry date, CVV, name on card)
+  - Automatic formatting for card number (spaces every 4 digits) and expiry date (MM/YY)
+  - Real-time form validation
+  - Handles payment submission with simulated API call
+  - Navigation to thank you screen on successful payment
 
 ### Theme System
 
@@ -101,12 +110,45 @@ This project includes the following features and implementations:
   - Theme-aware styling with custom colors
 
 - **PromoCodeSection** (`components/PromoCodeSection.tsx`): Promo code display component
+
   - Displays applied promo code with checkmark indicator
   - Real-time countdown timer showing remaining validity time
   - Dashed border design with decorative elements
   - Timer formatting (MM:SS) with proper accessibility labels
   - Conditional rendering based on discount active state
   - Theme-aware styling with custom promo section colors
+
+- **BuyNowButton** (`components/BuyNowButton.tsx`): Payment submission button component
+
+  - Lock icon indicator for security
+  - Disabled state handling with visual feedback
+  - Fully accessible with proper labels and states
+  - Theme-aware styling with success color scheme
+
+- **OrderSummary** (`components/OrderSummary.tsx`): Order details display component
+
+  - Displays plan details and pricing
+  - Shows discount information when active
+  - Promo code display with coupon icon
+  - Total price calculation and display
+  - Savings message with fire icon indicator
+  - Uses locked price snapshot to prevent price changes during checkout
+  - Theme-aware styling
+
+- **PaymentForm** (`components/PaymentForm.tsx`): Credit card input form component
+
+  - Credit card number input with card icon
+  - Expiry date input (MM/YY format)
+  - CVV input field
+  - Name on card input
+  - Automatic input formatting
+  - Keyboard-aware scrolling support
+  - Theme-aware styling
+
+- **PaymentMethods** (`components/PaymentMethods.tsx`): Payment method icons display
+  - Displays supported payment method icons (Visa, Mastercard, Maestro, Amex, Discover)
+  - Horizontal layout with proper spacing
+  - Visual indication of accepted payment methods
 
 ### Screens
 
@@ -124,6 +166,7 @@ This project includes the following features and implementations:
   - Navigation to Product screen
 
 - **Product Screen** (`app/(app)/(payment)/product.tsx`): Product selection and pricing display
+
   - Displays plan card with pricing information
   - Shows promo code section when discount is active
   - Real-time price updates based on discount status
@@ -131,6 +174,21 @@ This project includes the following features and implementations:
   - Keyboard-aware scrolling layout
   - Integrated with pricing and promo code hooks
   - Themed UI consistent with app design
+  - Navigation to Checkout screen
+
+- **Checkout Screen** (`app/(app)/(payment)/checkout.tsx`): Payment checkout screen
+
+  - Order summary with locked pricing snapshot
+  - Payment method icons display
+  - Credit card form with validation
+  - Buy Now button with form validation
+  - Keyboard-aware scrolling with auto-scroll on input focus
+  - Price locking mechanism to prevent changes during checkout
+  - Integrated with payment form hook for state management
+  - Theme-aware styling
+
+- **Thank You Screen** (`app/(app)/(payment)/thank-you.tsx`): Payment confirmation screen
+  - Success message display
 
 ### Utilities
 
@@ -141,9 +199,14 @@ This project includes the following features and implementations:
   - Uses current month and year for code generation
 
 - **Name Validation** (`utils/nameValidation.ts`): Validates name input format
+
   - Minimum 3 characters requirement
   - Alphabetic characters and spaces only
   - Trims whitespace automatically
+
+- **Email Validation** (`utils/emailValidation.ts`): Validates email input format
+  - Standard email format validation
+  - Real-time validation feedback
 
 ### Testing
 
@@ -157,8 +220,23 @@ This project includes the following features and implementations:
     - Discount state handling
     - Timer display formatting
     - Theme integration
+  - CheckoutScreen component tests
+    - Order summary rendering with locked prices
+    - Discount and promo code display
+    - Payment form validation and interaction
+    - Buy Now button state management
+    - Price snapshot functionality
+    - Form input handlers
+    - Keyboard handling
   - Utility function tests
   - Coverage reporting support
+
+### Assets
+
+- **Icons** (`assets/icons/`): Payment and UI icons
+  - Payment method icons: Visa, Mastercard, Maestro, American Express, Discover
+  - UI icons: Lock, Card, Coupon, Fire
+  - PNG format with proper sizing for mobile display
 
 ### Scripts
 

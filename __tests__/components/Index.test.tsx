@@ -17,7 +17,8 @@ describe("Index Component", () => {
   });
 
   it("should render a View container", () => {
-    const { UNSAFE_root } = render(<Index />);
-    expect(UNSAFE_root).toBeTruthy();
+    render(<Index />);
+    // Verify component renders without errors by checking for redirect element
+    expect(screen.getByTestId("redirect-/(app)/(payment)/email")).toBeTruthy();
   });
 });

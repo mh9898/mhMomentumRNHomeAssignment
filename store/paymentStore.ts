@@ -53,10 +53,14 @@ interface PaymentState {
   promoCode: string | null;
   promoCodeCreatedAt: number | null;
   isDiscountActive: boolean;
+  checkoutPriceSnapshot: number | null; // Locked price when entering checkout
+  checkoutDiscountActive: boolean | null; // Locked discount state when entering checkout
   setEmail: (email: string) => void;
   setName: (name: string) => void;
   setPromoCode: (code: string, createdAt: number) => void;
   checkPromoCodeValidity: () => void;
+  setCheckoutPriceSnapshot: (price: number, isDiscountActive: boolean) => void;
+  clearCheckoutPriceSnapshot: () => void;
   reset: () => void;
   logMMKV_Zustand: () => void;
 }
@@ -75,6 +79,8 @@ export const usePaymentStore = create<PaymentState>()(
       promoCode: null,
       promoCodeCreatedAt: null,
       isDiscountActive: false,
+      checkoutPriceSnapshot: null,
+      checkoutDiscountActive: null,
 
       logState: () => {
         if (!__DEV__) return;
@@ -144,6 +150,20 @@ export const usePaymentStore = create<PaymentState>()(
         set({ isDiscountActive: isValid });
       },
 
+      setCheckoutPriceSnapshot: (price: number, isDiscountActive: boolean) => {
+        set({
+          checkoutPriceSnapshot: price,
+          checkoutDiscountActive: isDiscountActive,
+        });
+      },
+
+      clearCheckoutPriceSnapshot: () => {
+        set({
+          checkoutPriceSnapshot: null,
+          checkoutDiscountActive: null,
+        });
+      },
+
       reset: () => {
         set({
           email: "",
@@ -151,6 +171,8 @@ export const usePaymentStore = create<PaymentState>()(
           promoCode: null,
           promoCodeCreatedAt: null,
           isDiscountActive: false,
+          checkoutPriceSnapshot: null,
+          checkoutDiscountActive: null,
         });
       },
     }),

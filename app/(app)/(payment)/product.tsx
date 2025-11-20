@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
   KeyboardAvoidingView,
@@ -14,12 +15,20 @@ import { Colors, Fonts } from "../../../constants/theme";
 import { useProductPricing } from "../../../hooks/use-product-pricing";
 import { usePromoCode } from "../../../hooks/use-promo-code";
 import { useThemeColors } from "../../../hooks/use-theme-colors";
+import { usePaymentStore } from "../../../store/paymentStore";
 
 const ProductScreen = () => {
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { promoCode, isDiscountActive, minutes, seconds } = usePromoCode();
   const { displayPrice, dailyPrice, originalPrice } = useProductPricing();
+  const { setCheckoutPriceSnapshot } = usePaymentStore();
+
+  const handleGetMyPlan = () => {
+    // Lock the price when navigating to checkout
+    setCheckoutPriceSnapshot(displayPrice, isDiscountActive);
+    router.push("./checkout");
+  };
 
   return (
     <KeyboardAvoidingView
@@ -53,7 +62,11 @@ const ProductScreen = () => {
           />
           {/* CTA Button */}
           <View style={styles.buttonContainer}>
-            <AppButton title="Get My Plan" accessibilityLabel="Get My Plan" />
+            <AppButton
+              title="Get My Plan"
+              accessibilityLabel="Get My Plan"
+              onPress={handleGetMyPlan}
+            />
           </View>
         </View>
       </ScrollView>

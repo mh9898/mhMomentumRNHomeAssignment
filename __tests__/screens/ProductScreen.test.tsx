@@ -1,9 +1,23 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { router } from "expo-router";
 import React from "react";
 import ProductScreen from "../../app/(app)/(payment)/product";
 import { useProductPricing } from "../../hooks/use-product-pricing";
 import { usePromoCode } from "../../hooks/use-promo-code";
 import { useThemeColors } from "../../hooks/use-theme-colors";
+import { usePaymentStore } from "../../store/paymentStore";
+
+// Mock expo-router
+jest.mock("expo-router", () => ({
+  router: {
+    push: jest.fn(),
+  },
+}));
+
+// Mock Zustand store (must be before ProductScreen import to prevent MMKV loading)
+jest.mock("../../store/paymentStore", () => ({
+  usePaymentStore: jest.fn(),
+}));
 
 // Mock hooks
 jest.mock("../../hooks/use-theme-colors", () => ({
@@ -41,6 +55,8 @@ describe("ProductScreen", () => {
     timerBoxBackground: "#FFFFFF",
   };
 
+  const mockSetCheckoutPriceSnapshot = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
     (useThemeColors as jest.Mock).mockReturnValue(mockColors);
@@ -57,6 +73,9 @@ describe("ProductScreen", () => {
       minutes: "00",
       seconds: "00",
       timeRemaining: 0,
+    });
+    (usePaymentStore as unknown as jest.Mock).mockReturnValue({
+      setCheckoutPriceSnapshot: mockSetCheckoutPriceSnapshot,
     });
   });
 
@@ -170,6 +189,17 @@ describe("ProductScreen", () => {
     render(<ProductScreen />);
 
     expect(screen.getByText("Get My Plan")).toBeTruthy();
+  });
+
+  // Test 8b: Calls setCheckoutPriceSnapshot and navigates when button is pressed
+  it("should call setCheckoutPriceSnapshot and navigate when Get My Plan button is pressed", () => {
+    render(<ProductScreen />);
+
+    const button = screen.getByText("Get My Plan");
+    fireEvent.press(button);
+
+    expect(mockSetCheckoutPriceSnapshot).toHaveBeenCalledWith(50.0, false);
+    expect(router.push).toHaveBeenCalledWith("./checkout");
   });
 
   // Test 9: PlanCard receives correct props when discount is active
