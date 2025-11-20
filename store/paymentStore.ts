@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { storage } from "../utils/storage";
+import { storage } from "@/utils/storage";
 
 // Constants
 const PROMO_CODE_VALIDITY_DURATION_MS = 5 * 60 * 1000; // 5 minutes

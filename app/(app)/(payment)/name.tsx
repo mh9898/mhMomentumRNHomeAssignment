@@ -1,18 +1,16 @@
+import AppTitle from "@/components/AppTitle";
+import PrivacyStatement from "@/components/PrivacyStatement";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import AppButton from "../../../components/AppButton";
-import AppTextInput from "../../../components/AppTextInput";
-import { Colors } from "../../../constants/theme";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../../store/paymentStore";
-import { isValidName } from "../../../utils/nameValidation";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import AppButton from "@/components/AppButton";
+import AppTextInput from "@/components/AppTextInput";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
+import { isValidName } from "@/utils/nameValidation";
+
+const arrowIcon = require("@/assets/icons/icon_arrow_right.png");
 
 const NameScreen = () => {
   const { name, setName, logMMKV_Zustand } = usePaymentStore();
@@ -59,30 +57,26 @@ const NameScreen = () => {
     >
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>
+        <AppTitle lineHeight={34}>
           Enter your name to get your personalized Calisthenics Workout Plan
-        </Text>
+        </AppTitle>
 
         {/* Name Input */}
         <AppTextInput
-          placeholder="enter your name"
+          placeholder="Name"
           value={localName}
           onChangeText={setLocalName}
-          autoCapitalize="none"
+          autoCapitalize="words"
           autoCorrect={false}
           autoFocus
           error={error}
           isValid={isValid}
+          fontSize={26}
+          fontFamily={Fonts.gothicA1SemiBold}
         />
 
         {/* Privacy Statement */}
-        <View style={styles.privacyContainer}>
-          <Text style={styles.privacyText}>
-            🔒 We respect your privacy and are committed to protecting your
-            personal data. We'll email you a copy of your results for convenient
-            access.
-          </Text>
-        </View>
+        <PrivacyStatement />
 
         {/* Continue Button */}
         <AppButton
@@ -90,6 +84,8 @@ const NameScreen = () => {
           onPress={handleContinue}
           disabled={!isValid}
           accessibilityLabel="Continue"
+          icon={arrowIcon}
+          iconColor={colors.buttonText}
         />
       </View>
     </KeyboardAvoidingView>
@@ -107,22 +103,6 @@ const createStyles = (colors: typeof Colors.light) => {
       paddingHorizontal: 24,
       paddingTop: 20,
       paddingBottom: 40,
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: "600",
-      color: colors.text,
-      marginBottom: 32,
-      textAlign: "left",
-    },
-    privacyContainer: {
-      marginTop: 24,
-      marginBottom: 32,
-    },
-    privacyText: {
-      fontSize: 12,
-      color: colors.icon,
-      lineHeight: 18,
     },
   });
 };

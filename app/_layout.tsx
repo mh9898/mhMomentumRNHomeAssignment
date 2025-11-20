@@ -11,10 +11,10 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
-    "GothicA1-Regular": require("../assets/fonts/GothicA1-Regular.ttf"),
-    "GothicA1-Medium": require("../assets/fonts/GothicA1-Medium.ttf"),
-    "GothicA1-SemiBold": require("../assets/fonts/GothicA1-SemiBold.ttf"),
-    "GothicA1-Bold": require("../assets/fonts/GothicA1-Bold.ttf"),
+    "GothicA1-Regular": require("@/assets/fonts/GothicA1-Regular.ttf"),
+    "GothicA1-Medium": require("@/assets/fonts/GothicA1-Medium.ttf"),
+    "GothicA1-SemiBold": require("@/assets/fonts/GothicA1-SemiBold.ttf"),
+    "GothicA1-Bold": require("@/assets/fonts/GothicA1-Bold.ttf"),
   });
 
   useEffect(() => {

@@ -1,3 +1,5 @@
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -8,9 +10,6 @@ import {
   Text,
   View,
 } from "react-native";
-import AppButton from "../../../components/AppButton";
-import { Colors, Fonts } from "../../../constants/theme";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
 
 const ThankYouScreen = () => {
   const colors = useThemeColors();
@@ -18,7 +17,7 @@ const ThankYouScreen = () => {
 
   const handleContinue = () => {
     // Navigate back to product screen or home
-    router.replace("/(app)/(payment)/product");
+    router.replace("./product");
   };
 
   return (
@@ -34,14 +33,14 @@ const ThankYouScreen = () => {
         <View style={styles.content}>
           {/* Title */}
           <Text style={styles.title}>Thank You</Text>
-          {/* CTA Button */}
-          <View style={styles.buttonContainer}>
+          {/* CTA Button for debugging */}
+          {/* <View style={styles.buttonContainer}>
             <AppButton
               title="Continue"
               onPress={handleContinue}
               accessibilityLabel="Continue"
             />
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -8,14 +8,14 @@ import {
   Text,
   View,
 } from "react-native";
-import AppButton from "../../../components/AppButton";
-import PlanCard from "../../../components/PlanCard";
-import PromoCodeSection from "../../../components/PromoCodeSection";
-import { Colors, Fonts } from "../../../constants/theme";
-import { useProductPricing } from "../../../hooks/use-product-pricing";
-import { usePromoCode } from "../../../hooks/use-promo-code";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../../store/paymentStore";
+import AppButton from "@/components/AppButton";
+import PlanCard from "@/components/PlanCard";
+import PromoCodeSection from "@/components/PromoCodeSection";
+import { Colors, Fonts } from "@/constants/theme";
+import { useProductPricing } from "@/hooks/use-product-pricing";
+import { usePromoCode } from "@/hooks/use-promo-code";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
 
 const ProductScreen = () => {
   const colors = useThemeColors();

@@ -11,6 +11,7 @@ const tintColorDark = "#fff";
 export const Colors = {
   light: {
     text: "#11181C",
+    textPrivacyStatement: "#999999",
     background: "#fff",
     tint: tintColorLight,
     icon: "#687076",
@@ -18,9 +19,11 @@ export const Colors = {
     tabIconSelected: tintColorLight,
     error: "#FF3B30",
     border: "#E5E5E5",
+    buttonDisabledColor: "#7F8082",
     errorBackground: "#FFF5F5",
     buttonBackground: "#000000",
     buttonText: "#FFFFFF",
+    arrowIcon: "#FFFFFF",
     success: "#4CAF50",
     planCardBorder: "#2196F3",
     radioButtonBackground: "#EFF1F5",
@@ -38,6 +41,7 @@ export const Colors = {
   },
   dark: {
     text: "#ECEDEE",
+    textPrivacyStatement: "#9BA1A6",
     background: "#151718",
     tint: tintColorDark,
     icon: "#9BA1A6",
@@ -47,7 +51,9 @@ export const Colors = {
     border: "#3A3A3A",
     errorBackground: "#2A1515",
     buttonBackground: "#FFFFFF",
+    buttonDisabledColor: "#7F8082",
     buttonText: "#000000",
+    arrowIcon: "#000000",
     success: "#66BB6A",
     planCardBorder: "#42A5F5",
     radioButtonBackground: "#2A2D35",

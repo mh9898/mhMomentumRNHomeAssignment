@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
-const couponIcon = require("../assets/icons/icon_coupon.png");
-const fireIcon = require("../assets/icons/icon_fire.png");
+const couponIcon = require("@/assets/icons/icon_coupon.png");
+const fireIcon = require("@/assets/icons/icon_fire.png");
 
 interface OrderSummaryProps {
   originalPrice: number;

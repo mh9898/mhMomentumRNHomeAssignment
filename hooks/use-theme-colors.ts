@@ -10,7 +10,7 @@
  * ```
  */
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "./use-color-scheme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export function useThemeColors() {
   const colorScheme = useColorScheme() ?? "light";

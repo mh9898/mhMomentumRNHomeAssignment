@@ -1,7 +1,12 @@
+import { usePaymentStore } from "@/store/paymentStore";
+import {
+  formatCardNumber,
+  formatCVV,
+  formatExpiryDate,
+} from "@/utils/paymentFormatting";
 import { router } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert } from "react-native";
-import { usePaymentStore } from "../store/paymentStore";
 
 // Constants
 const PAYMENT_SUCCESS_RATE = 0.9; // 90% success rate for demo
@@ -9,7 +14,6 @@ const API_CALL_DELAY_MS = 1000; // Simulated API call delay
 const CARD_NUMBER_LENGTH = 16;
 const EXPIRY_DATE_LENGTH = 4;
 const CVV_MIN_LENGTH = 3;
-const CARD_NUMBER_MAX_LENGTH = 19; // 16 digits + 3 spaces
 
 interface PaymentFormState {
   cardNumber: string;
@@ -24,7 +28,14 @@ interface UsePaymentFormReturn {
   setExpiryDate: (text: string) => void;
   setCvv: (text: string) => void;
   setNameOnCard: (text: string) => void;
+  onCardNumberBlur: () => void;
+  onExpiryDateBlur: () => void;
+  onCvvBlur: () => void;
   isFormValid: boolean;
+  isExpiryDateInvalid: boolean;
+  isCardNumberInvalid: boolean;
+  isCvvInvalid: boolean;
+  isLoading: boolean;
   handleBuyNow: () => Promise<void>;
 }
 
@@ -38,129 +49,228 @@ export function usePaymentForm(): UsePaymentFormReturn {
   const [expiryDate, setExpiryDateState] = useState("");
   const [cvv, setCvvState] = useState("");
   const [nameOnCard, setNameOnCardState] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [touchedFields, setTouchedFields] = useState({
+    cardNumber: false,
+    expiryDate: false,
+    cvv: false,
+  });
+  const previousExpiryDateRef = useRef("");
 
-  const formatCardNumber = useCallback((text: string) => {
-    // Remove all non-digits
-    const cleaned = text.replace(/\D/g, "");
-    // Add spaces every 4 digits
-    const formatted = cleaned.match(/.{1,4}/g)?.join(" ") || cleaned;
-    return formatted.substring(0, CARD_NUMBER_MAX_LENGTH);
+  const setCardNumber = useCallback((text: string) => {
+    setCardNumberState(formatCardNumber(text));
   }, []);
 
-  const formatExpiryDate = useCallback((text: string) => {
-    // Remove all non-digits
-    const cleaned = text.replace(/\D/g, "");
-    // Add slash after 2 digits
-    if (cleaned.length >= 2) {
-      return `${cleaned.substring(0, 2)}/${cleaned.substring(2, 4)}`;
+  const setExpiryDate = useCallback((text: string) => {
+    const previousExpiry = previousExpiryDateRef.current;
+    const previousCleaned = previousExpiry.replace(/\//g, "");
+    const newCleaned = text.replace(/\//g, "");
+
+    // Detect if user is deleting the slash: previous had "/" but new text doesn't,
+    // and the digits are the same (user deleted just the slash)
+    const wasDeletingSlash =
+      previousExpiry.includes("/") &&
+      !text.includes("/") &&
+      previousCleaned === newCleaned &&
+      newCleaned.length === 2;
+
+    // If user deleted the slash from "MM/" format, allow it to stay as "MM"
+    if (wasDeletingSlash) {
+      setExpiryDateState(newCleaned);
+      previousExpiryDateRef.current = newCleaned;
+      return;
     }
-    return cleaned;
+
+    const formatted = formatExpiryDate(text);
+    setExpiryDateState(formatted);
+    previousExpiryDateRef.current = formatted;
   }, []);
 
-  const formatCVV = useCallback((text: string) => {
-    // Only allow digits, max 4 characters
-    return text.replace(/\D/g, "").substring(0, 4);
+  const setCvv = useCallback((text: string) => {
+    setCvvState(formatCVV(text));
   }, []);
-
-  const setCardNumber = useCallback(
-    (text: string) => {
-      setCardNumberState(formatCardNumber(text));
-    },
-    [formatCardNumber]
-  );
-
-  const setExpiryDate = useCallback(
-    (text: string) => {
-      setExpiryDateState(formatExpiryDate(text));
-    },
-    [formatExpiryDate]
-  );
-
-  const setCvv = useCallback(
-    (text: string) => {
-      setCvvState(formatCVV(text));
-    },
-    [formatCVV]
-  );
 
   const setNameOnCard = useCallback((text: string) => {
     setNameOnCardState(text);
   }, []);
 
-  const isFormValid = useCallback(() => {
+  // Blur handlers to mark fields as touched
+  const onCardNumberBlur = useCallback(() => {
+    setTouchedFields((prev) => ({ ...prev, cardNumber: true }));
+  }, []);
+
+  const onExpiryDateBlur = useCallback(() => {
+    setTouchedFields((prev) => ({ ...prev, expiryDate: true }));
+  }, []);
+
+  const onCvvBlur = useCallback(() => {
+    setTouchedFields((prev) => ({ ...prev, cvv: true }));
+  }, []);
+
+  // Validation helper function to check if expiry date is not expired
+  const isExpiryDateValid = useCallback((expiry: string): boolean => {
+    const expiryCleaned = expiry.replace(/\//g, "");
+    if (expiryCleaned.length !== EXPIRY_DATE_LENGTH) {
+      return false;
+    }
+
+    const month = parseInt(expiryCleaned.substring(0, 2), 10);
+    const year = parseInt(expiryCleaned.substring(2, 4), 10);
+
+    // Validate month is between 01-12
+    if (month < 1 || month > 12) {
+      return false;
+    }
+
+    // Convert YY to full year (e.g., 25 -> 2025)
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
+    const fullYear = 2000 + year;
+
+    // Card expires at the end of the expiry month, so it's valid until the last day of that month
+    // Compare: if fullYear > currentYear, it's valid
+    // If fullYear === currentYear, check if month >= currentMonth
+    if (fullYear > currentYear) {
+      return true;
+    } else if (fullYear === currentYear) {
+      return month >= currentMonth;
+    } else {
+      return false; // Year is in the past
+    }
+  }, []);
+
+  // Validation helper function
+  const validateForm = useCallback(() => {
     const cardNumberCleaned = cardNumber.replace(/\s/g, "");
     const expiryCleaned = expiryDate.replace(/\//g, "");
     return (
       cardNumberCleaned.length === CARD_NUMBER_LENGTH &&
       expiryCleaned.length === EXPIRY_DATE_LENGTH &&
+      isExpiryDateValid(expiryDate) &&
       cvv.length >= CVV_MIN_LENGTH &&
       nameOnCard.trim().length > 0
     );
-  }, [cardNumber, expiryDate, cvv, nameOnCard]);
+  }, [cardNumber, expiryDate, cvv, nameOnCard, isExpiryDateValid]);
 
-  const handleBuyNow = useCallback(async () => {
-    const cardNumberCleaned = cardNumber.replace(/\s/g, "");
+  const isFormValid = useMemo(() => validateForm(), [validateForm]);
+
+  // Check if expiry date is invalid (only show after blur)
+  const isExpiryDateInvalid = useMemo(() => {
+    if (!touchedFields.expiryDate) return false;
     const expiryCleaned = expiryDate.replace(/\//g, "");
-    const isValid =
-      cardNumberCleaned.length === CARD_NUMBER_LENGTH &&
-      expiryCleaned.length === EXPIRY_DATE_LENGTH &&
-      cvv.length >= CVV_MIN_LENGTH &&
-      nameOnCard.trim().length > 0;
-
-    if (!isValid) {
-      Alert.alert(
-        "Invalid Form",
-        "Please fill in all payment details correctly."
-      );
-      return;
+    // Only show as invalid if user has entered something (at least 4 digits) but it's invalid
+    if (expiryCleaned.length === EXPIRY_DATE_LENGTH) {
+      return !isExpiryDateValid(expiryDate);
     }
+    return false;
+  }, [expiryDate, isExpiryDateValid, touchedFields.expiryDate]);
 
-    // Mock checkout session
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, API_CALL_DELAY_MS));
+  // Check if card number is invalid (only show after blur)
+  const isCardNumberInvalid = useMemo(() => {
+    if (!touchedFields.cardNumber) return false;
+    const cardNumberCleaned = cardNumber.replace(/\s/g, "");
+    // Only show as invalid if user has entered something but it's not 16 digits
+    if (cardNumberCleaned.length > 0) {
+      return cardNumberCleaned.length !== CARD_NUMBER_LENGTH;
+    }
+    return false;
+  }, [cardNumber, touchedFields.cardNumber]);
 
-      // Mock success - in a real app, this would be an API call
-      const success = Math.random() > 1 - PAYMENT_SUCCESS_RATE;
+  // Check if CVV is invalid (only show after blur)
+  const isCvvInvalid = useMemo(() => {
+    if (!touchedFields.cvv) return false;
+    // CVV should be 3 or 4 digits
+    // Only show as invalid if user has entered something but it's not valid
+    if (cvv.length > 0) {
+      return cvv.length < CVV_MIN_LENGTH || cvv.length > 4;
+    }
+    return false;
+  }, [cvv, touchedFields.cvv]);
 
-      if (success) {
-        // Clear checkout snapshot on successful purchase
-        clearCheckoutPriceSnapshot();
-        // Navigate to thank you screen
-        router.replace("./thank-you");
-      } else {
-        // Show cancel/error alert
+  // Use ref to store the latest handleBuyNow function to avoid stale closure in error handler
+  const handleBuyNowRef = useRef<(() => Promise<void>) | undefined>(undefined);
+
+  // Update the ref whenever dependencies change
+  useEffect(() => {
+    handleBuyNowRef.current = async () => {
+      if (!validateForm()) {
+        const expiryCleaned = expiryDate.replace(/\//g, "");
+        let errorMessage = "Please fill in all payment details correctly.";
+
+        // Provide specific error message for expired cards
+        if (
+          expiryCleaned.length === EXPIRY_DATE_LENGTH &&
+          !isExpiryDateValid(expiryDate)
+        ) {
+          errorMessage =
+            "The card expiry date is invalid or has expired. Please check and try again.";
+        }
+
+        Alert.alert("Invalid Form", errorMessage);
+        return;
+      }
+
+      // Set loading state
+      setIsLoading(true);
+
+      // Mock checkout session
+      try {
+        // Simulate API call delay
+        await new Promise((resolve) => setTimeout(resolve, API_CALL_DELAY_MS));
+
+        // Mock success - in a real app, this would be an API call
+        const success = Math.random() > 1 - PAYMENT_SUCCESS_RATE;
+
+        if (success) {
+          // Clear checkout snapshot on successful purchase
+          clearCheckoutPriceSnapshot();
+          // Navigate to thank you screen
+          router.replace("./thank-you");
+        } else {
+          // Show cancel/error alert
+          setIsLoading(false);
+          Alert.alert(
+            "Payment Failed",
+            "Your payment could not be processed. Please try again.",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  // Stay on checkout screen
+                },
+              },
+            ]
+          );
+        }
+      } catch (error) {
+        setIsLoading(false);
         Alert.alert(
-          "Payment Failed",
-          "Your payment could not be processed. Please try again.",
+          "Error",
+          "An error occurred during checkout. Please try again.",
           [
             {
-              text: "OK",
+              text: "Cancel",
+              style: "cancel",
+              onPress: () => router.back(),
+            },
+            {
+              text: "Retry",
               onPress: () => {
-                // Stay on checkout screen
+                // Use ref to get the latest function reference
+                handleBuyNowRef.current?.();
               },
             },
           ]
         );
       }
-    } catch (error) {
-      Alert.alert(
-        "Error",
-        "An error occurred during checkout. Please try again.",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-            onPress: () => router.back(),
-          },
-          {
-            text: "Retry",
-            onPress: handleBuyNow,
-          },
-        ]
-      );
-    }
-  }, [cardNumber, expiryDate, cvv, nameOnCard, clearCheckoutPriceSnapshot]);
+    };
+  }, [validateForm, clearCheckoutPriceSnapshot, expiryDate, isExpiryDateValid]);
+
+  // Wrap the ref function in a stable callback
+  const handleBuyNow = useCallback(async () => {
+    await handleBuyNowRef.current?.();
+  }, []);
 
   return {
     formState: {
@@ -173,7 +283,14 @@ export function usePaymentForm(): UsePaymentFormReturn {
     setExpiryDate,
     setCvv,
     setNameOnCard,
-    isFormValid: isFormValid(),
+    onCardNumberBlur,
+    onExpiryDateBlur,
+    onCvvBlur,
+    isFormValid,
+    isExpiryDateInvalid,
+    isCardNumberInvalid,
+    isCvvInvalid,
+    isLoading,
     handleBuyNow,
   };
 }

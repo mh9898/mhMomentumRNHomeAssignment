@@ -1,7 +1,9 @@
-import { Colors } from "@/constants/theme";
+import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
 import {
+  Image,
+  ImageSourcePropType,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,6 +14,8 @@ interface AppButtonProps extends Omit<TouchableOpacityProps, "style"> {
   title: string;
   disabled?: boolean;
   showArrow?: boolean;
+  icon?: ImageSourcePropType;
+  iconColor?: string;
   style?: TouchableOpacityProps["style"];
 }
 
@@ -19,6 +23,8 @@ export default function AppButton({
   title,
   disabled = false,
   showArrow = true,
+  icon,
+  iconColor,
   style,
   accessibilityLabel,
   ...touchableOpacityProps
@@ -28,6 +34,10 @@ export default function AppButton({
     () => createStyles(colors, disabled),
     [colors, disabled]
   );
+
+  const iconTintColor =
+    iconColor || (disabled ? colors.icon : colors.buttonText);
+
   return (
     <TouchableOpacity
       style={[styles.button, disabled && styles.buttonDisabled, style]}
@@ -39,13 +49,19 @@ export default function AppButton({
       <Text style={[styles.buttonText, disabled && styles.buttonTextDisabled]}>
         {title}
       </Text>
-      {showArrow && (
+      {icon ? (
+        <Image
+          source={icon}
+          style={[styles.buttonIcon, { tintColor: iconTintColor }]}
+          resizeMode="contain"
+        />
+      ) : showArrow ? (
         <Text
           style={[styles.buttonArrow, disabled && styles.buttonTextDisabled]}
         >
           →
         </Text>
-      )}
+      ) : null}
     </TouchableOpacity>
   );
 }
@@ -63,21 +79,27 @@ const createStyles = (colors: typeof Colors.light, disabled: boolean) => {
       marginTop: "auto",
     },
     buttonDisabled: {
-      backgroundColor: colors.border,
+      backgroundColor: colors.buttonDisabledColor,
     },
     buttonText: {
+      fontFamily: Fonts.gothicA1Medium,
       color: colors.buttonText,
       fontSize: 16,
-      fontWeight: "600",
+      fontWeight: "500",
       marginRight: 8,
     },
     buttonTextDisabled: {
-      color: colors.icon,
+      color: colors.buttonText,
     },
     buttonArrow: {
       color: colors.text,
       fontSize: 20,
       fontWeight: "600",
+    },
+    buttonIcon: {
+      width: 20,
+      height: 20,
+      marginLeft: 4,
     },
   });
 };

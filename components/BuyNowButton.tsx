@@ -1,33 +1,49 @@
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
-const lockIcon = require("../assets/icons/icon_lock.png");
+const lockIcon = require("@/assets/icons/icon_lock.png");
 
 interface BuyNowButtonProps {
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
 }
 
 export default function BuyNowButton({
   onPress,
   disabled = false,
+  loading = false,
 }: BuyNowButtonProps) {
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
+  const isDisabled = disabled || loading;
+
   return (
     <TouchableOpacity
-      style={[styles.buyNowButton, disabled && styles.buyNowButtonDisabled]}
+      style={[styles.buyNowButton, isDisabled && styles.buyNowButtonDisabled]}
       onPress={onPress}
-      disabled={disabled}
+      disabled={isDisabled}
       accessibilityLabel="Buy Now"
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled: isDisabled }}
     >
-      <Image source={lockIcon} style={styles.lockIcon} resizeMode="contain" />
-      <Text style={[styles.buyNowText, disabled && styles.buyNowTextDisabled]}>
-        Buy Now
+      {loading ? (
+        <ActivityIndicator color={colors.buttonText} size="small" />
+      ) : (
+        <Image source={lockIcon} style={styles.lockIcon} resizeMode="contain" />
+      )}
+      <Text
+        style={[styles.buyNowText, isDisabled && styles.buyNowTextDisabled]}
+      >
+        {loading ? "Processing..." : "Buy Now"}
       </Text>
     </TouchableOpacity>
   );

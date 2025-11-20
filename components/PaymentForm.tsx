@@ -1,10 +1,10 @@
+import AppTextInput from "@/components/AppTextInput";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
-import AppTextInput from "./AppTextInput";
 
-const cardIcon = require("../assets/icons/icon_card.png");
+const cardIcon = require("@/assets/icons/icon_card.png");
 
 interface PaymentFormProps {
   cardNumber: string;
@@ -16,6 +16,12 @@ interface PaymentFormProps {
   onCVVChange: (text: string) => void;
   onNameOnCardChange: (text: string) => void;
   onInputFocus: () => void;
+  onCardNumberBlur?: () => void;
+  onExpiryDateBlur?: () => void;
+  onCvvBlur?: () => void;
+  isExpiryDateInvalid?: boolean;
+  isCardNumberInvalid?: boolean;
+  isCvvInvalid?: boolean;
 }
 
 export default function PaymentForm({
@@ -28,9 +34,24 @@ export default function PaymentForm({
   onCVVChange,
   onNameOnCardChange,
   onInputFocus,
+  onCardNumberBlur,
+  onExpiryDateBlur,
+  onCvvBlur,
+  isExpiryDateInvalid = false,
+  isCardNumberInvalid = false,
+  isCvvInvalid = false,
 }: PaymentFormProps) {
   const colors = useThemeColors();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(
+    () =>
+      createStyles(
+        colors,
+        isExpiryDateInvalid,
+        isCardNumberInvalid,
+        isCvvInvalid
+      ),
+    [colors, isExpiryDateInvalid, isCardNumberInvalid, isCvvInvalid]
+  );
 
   return (
     <View>
@@ -42,8 +63,12 @@ export default function PaymentForm({
           onChangeText={onCardNumberChange}
           keyboardType="numeric"
           maxLength={19}
-          style={styles.cardNumberInput}
+          style={[
+            styles.cardNumberInput,
+            isCardNumberInvalid && styles.cardNumberInputInvalid,
+          ]}
           onFocus={onInputFocus}
+          onBlur={onCardNumberBlur}
         />
         <Image source={cardIcon} style={styles.cardIcon} resizeMode="contain" />
       </View>
@@ -56,8 +81,12 @@ export default function PaymentForm({
           onChangeText={onExpiryDateChange}
           keyboardType="numeric"
           maxLength={5}
-          style={styles.halfInput}
+          style={[
+            styles.halfInput,
+            isExpiryDateInvalid && styles.expiryInputInvalid,
+          ]}
           onFocus={onInputFocus}
+          onBlur={onExpiryDateBlur}
         />
         <AppTextInput
           placeholder="CVV"
@@ -65,8 +94,9 @@ export default function PaymentForm({
           onChangeText={onCVVChange}
           keyboardType="numeric"
           maxLength={4}
-          style={styles.halfInput}
+          style={[styles.halfInput, isCvvInvalid && styles.cvvInputInvalid]}
           onFocus={onInputFocus}
+          onBlur={onCvvBlur}
         />
       </View>
 
@@ -83,7 +113,12 @@ export default function PaymentForm({
   );
 }
 
-const createStyles = (colors: typeof Colors.light) => {
+const createStyles = (
+  colors: typeof Colors.light,
+  isExpiryDateInvalid: boolean,
+  isCardNumberInvalid: boolean,
+  isCvvInvalid: boolean
+) => {
   return StyleSheet.create({
     cardNumberContainer: {
       position: "relative",
@@ -100,6 +135,11 @@ const createStyles = (colors: typeof Colors.light) => {
       borderRadius: 8,
       paddingHorizontal: 16,
       backgroundColor: colors.background,
+    },
+    cardNumberInputInvalid: {
+      backgroundColor: colors.errorBackground,
+      borderColor: colors.error,
+      borderBottomColor: colors.error,
     },
     cardIcon: {
       position: "absolute",
@@ -138,6 +178,16 @@ const createStyles = (colors: typeof Colors.light) => {
       borderRadius: 8,
       paddingHorizontal: 16,
       backgroundColor: colors.background,
+    },
+    expiryInputInvalid: {
+      backgroundColor: colors.errorBackground,
+      borderColor: colors.error,
+      borderBottomColor: colors.error,
+    },
+    cvvInputInvalid: {
+      backgroundColor: colors.errorBackground,
+      borderColor: colors.error,
+      borderBottomColor: colors.error,
     },
   });
 };

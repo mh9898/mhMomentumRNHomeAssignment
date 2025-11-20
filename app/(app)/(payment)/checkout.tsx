@@ -1,4 +1,14 @@
-import React, { useMemo, useRef } from "react";
+import BuyNowButton from "@/components/BuyNowButton";
+import OrderSummary from "@/components/OrderSummary";
+import PaymentForm from "@/components/PaymentForm";
+import PaymentMethods from "@/components/PaymentMethods";
+import { Colors } from "@/constants/theme";
+import { usePaymentForm } from "@/hooks/use-payment-form";
+import { useProductPricing } from "@/hooks/use-product-pricing";
+import { usePromoCode } from "@/hooks/use-promo-code";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -6,16 +16,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import BuyNowButton from "../../../components/BuyNowButton";
-import OrderSummary from "../../../components/OrderSummary";
-import PaymentForm from "../../../components/PaymentForm";
-import PaymentMethods from "../../../components/PaymentMethods";
-import { Colors } from "../../../constants/theme";
-import { usePaymentForm } from "../../../hooks/use-payment-form";
-import { useProductPricing } from "../../../hooks/use-product-pricing";
-import { usePromoCode } from "../../../hooks/use-promo-code";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../../store/paymentStore";
 
 const CheckoutScreen = () => {
   const colors = useThemeColors();
@@ -25,6 +25,7 @@ const CheckoutScreen = () => {
   const { checkoutPriceSnapshot, checkoutDiscountActive } = usePaymentStore();
 
   const scrollViewRef = useRef<ScrollView>(null);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
     formState,
@@ -32,7 +33,14 @@ const CheckoutScreen = () => {
     setExpiryDate,
     setCvv,
     setNameOnCard,
+    onCardNumberBlur,
+    onExpiryDateBlur,
+    onCvvBlur,
     isFormValid,
+    isExpiryDateInvalid,
+    isCardNumberInvalid,
+    isCvvInvalid,
+    isLoading,
     handleBuyNow,
   } = usePaymentForm();
 
@@ -44,10 +52,24 @@ const CheckoutScreen = () => {
 
   const discountAmount = lockedDiscountActive ? originalPrice - lockedPrice : 0;
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleInputFocus = () => {
+    // Clear any existing timeout before setting a new one
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
     // Scroll to show the input when focused
-    setTimeout(() => {
+    scrollTimeoutRef.current = setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
+      scrollTimeoutRef.current = null;
     }, 100);
   };
 
@@ -89,10 +111,20 @@ const CheckoutScreen = () => {
               onCVVChange={setCvv}
               onNameOnCardChange={setNameOnCard}
               onInputFocus={handleInputFocus}
+              onCardNumberBlur={onCardNumberBlur}
+              onExpiryDateBlur={onExpiryDateBlur}
+              onCvvBlur={onCvvBlur}
+              isExpiryDateInvalid={isExpiryDateInvalid}
+              isCardNumberInvalid={isCardNumberInvalid}
+              isCvvInvalid={isCvvInvalid}
             />
 
             <View style={styles.buttonContainer}>
-              <BuyNowButton onPress={handleBuyNow} disabled={!isFormValid} />
+              <BuyNowButton
+                onPress={handleBuyNow}
+                disabled={!isFormValid}
+                loading={isLoading}
+              />
             </View>
           </View>
         </View>

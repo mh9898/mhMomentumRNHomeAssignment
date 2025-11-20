@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 // Constants
 const DASHED_LINE_SEGMENT_COUNT = 60;

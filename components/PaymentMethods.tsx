@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { Colors } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
+import { Colors } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
-const visaIcon = require("../assets/icons/icon_visa.png");
-const mastercardIcon = require("../assets/icons/icon_mastercard.png");
-const maestroIcon = require("../assets/icons/icon_maestro.png");
-const amexIcon = require("../assets/icons/icon_amrican.png");
-const discoverIcon = require("../assets/icons/icon_discover.png");
+const visaIcon = require("@/assets/icons/icon_visa.png");
+const mastercardIcon = require("@/assets/icons/icon_mastercard.png");
+const maestroIcon = require("@/assets/icons/icon_maestro.png");
+const amexIcon = require("@/assets/icons/icon_amrican.png");
+const discoverIcon = require("@/assets/icons/icon_discover.png");
 
 export default function PaymentMethods() {
   const colors = useThemeColors();
