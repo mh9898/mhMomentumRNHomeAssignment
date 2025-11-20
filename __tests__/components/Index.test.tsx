@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react-native";
 import React from "react";
-import Index from "../../app/index";
+import Index from "@/app/index";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({

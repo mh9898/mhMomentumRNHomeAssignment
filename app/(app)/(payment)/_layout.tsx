@@ -2,7 +2,7 @@ import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Stack } from "expo-router";
 import { Image } from "react-native";
 
-const momentumLogo = require("../../../assets/images/Logo_Momentum.png");
+const momentumLogo = require("@/assets/images/Logo_Momentum.png");
 
 const PaymentLayout = () => {
   const colors = useThemeColors();

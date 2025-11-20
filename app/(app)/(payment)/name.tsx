@@ -3,14 +3,14 @@ import PrivacyStatement from "@/components/PrivacyStatement";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import AppButton from "../../../components/AppButton";
-import AppTextInput from "../../../components/AppTextInput";
-import { Colors, Fonts } from "../../../constants/theme";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../../store/paymentStore";
-import { isValidName } from "../../../utils/nameValidation";
+import AppButton from "@/components/AppButton";
+import AppTextInput from "@/components/AppTextInput";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
+import { isValidName } from "@/utils/nameValidation";
 
-const arrowIcon = require("../../../assets/icons/icon_arrow_right.png");
+const arrowIcon = require("@/assets/icons/icon_arrow_right.png");
 
 const NameScreen = () => {
   const { name, setName, logMMKV_Zustand } = usePaymentStore();

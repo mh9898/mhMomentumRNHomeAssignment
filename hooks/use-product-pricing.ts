@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { usePaymentStore } from "../store/paymentStore";
+import { usePaymentStore } from "@/store/paymentStore";
 
 const ORIGINAL_PRICE = 50.0;
 const DISCOUNTED_PRICE = 25.0;

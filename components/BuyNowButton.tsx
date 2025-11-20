@@ -1,9 +1,15 @@
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
-const lockIcon = require("../assets/icons/icon_lock.png");
+const lockIcon = require("@/assets/icons/icon_lock.png");
 
 interface BuyNowButtonProps {
   onPress: () => void;
@@ -34,7 +40,9 @@ export default function BuyNowButton({
       ) : (
         <Image source={lockIcon} style={styles.lockIcon} resizeMode="contain" />
       )}
-      <Text style={[styles.buyNowText, isDisabled && styles.buyNowTextDisabled]}>
+      <Text
+        style={[styles.buyNowText, isDisabled && styles.buyNowTextDisabled]}
+      >
         {loading ? "Processing..." : "Buy Now"}
       </Text>
     </TouchableOpacity>

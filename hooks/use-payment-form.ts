@@ -1,12 +1,12 @@
-import { router } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Alert } from "react-native";
-import { usePaymentStore } from "../store/paymentStore";
+import { usePaymentStore } from "@/store/paymentStore";
 import {
   formatCardNumber,
   formatCVV,
   formatExpiryDate,
-} from "../utils/paymentFormatting";
+} from "@/utils/paymentFormatting";
+import { router } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Alert } from "react-native";
 
 // Constants
 const PAYMENT_SUCCESS_RATE = 0.9; // 90% success rate for demo

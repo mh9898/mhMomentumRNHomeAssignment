@@ -1,16 +1,16 @@
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import AppButton from "../../../components/AppButton";
-import AppTextInput from "../../../components/AppTextInput";
-import AppTitle from "../../../components/AppTitle";
-import PrivacyStatement from "../../../components/PrivacyStatement";
-import { Colors, Fonts } from "../../../constants/theme";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../../store/paymentStore";
-import { isValidEmail } from "../../../utils/emailValidation";
+import AppButton from "@/components/AppButton";
+import AppTextInput from "@/components/AppTextInput";
+import AppTitle from "@/components/AppTitle";
+import PrivacyStatement from "@/components/PrivacyStatement";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
+import { isValidEmail } from "@/utils/emailValidation";
 
-const arrowIcon = require("../../../assets/icons/icon_arrow_right.png");
+const arrowIcon = require("@/assets/icons/icon_arrow_right.png");
 
 const EmailScreen = () => {
   const { email, setEmail, logMMKV_Zustand } = usePaymentStore();

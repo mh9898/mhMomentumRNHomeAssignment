@@ -6,9 +6,9 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import NameScreen from "../../app/(app)/(payment)/name";
-import { useThemeColors } from "../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../store/paymentStore";
+import NameScreen from "@/app/(app)/(payment)/name";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({
@@ -18,12 +18,12 @@ jest.mock("expo-router", () => ({
 }));
 
 // Mock hooks
-jest.mock("../../hooks/use-theme-colors", () => ({
+jest.mock("@/hooks/use-theme-colors", () => ({
   useThemeColors: jest.fn(),
 }));
 
 // Mock Zustand store
-jest.mock("../../store/paymentStore", () => ({
+jest.mock("@/store/paymentStore", () => ({
   usePaymentStore: jest.fn(),
 }));
 

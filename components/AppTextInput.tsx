@@ -6,8 +6,8 @@ import {
   TextInputProps,
   View,
 } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 interface AppTextInputProps extends TextInputProps {
   error?: string | null;

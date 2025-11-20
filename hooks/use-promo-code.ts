@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { usePaymentStore } from "../store/paymentStore";
-import { generateDiscountCode } from "../utils/discountCode";
+import { usePaymentStore } from "@/store/paymentStore";
+import { generateDiscountCode } from "@/utils/discountCode";
 
 const PROMO_CODE_VALIDITY_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 

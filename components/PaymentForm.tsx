@@ -1,10 +1,10 @@
+import AppTextInput from "@/components/AppTextInput";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { Colors, Fonts } from "../constants/theme";
-import { useThemeColors } from "../hooks/use-theme-colors";
-import AppTextInput from "./AppTextInput";
 
-const cardIcon = require("../assets/icons/icon_card.png");
+const cardIcon = require("@/assets/icons/icon_card.png");
 
 interface PaymentFormProps {
   cardNumber: string;

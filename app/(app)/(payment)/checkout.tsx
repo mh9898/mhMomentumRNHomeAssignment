@@ -1,3 +1,13 @@
+import BuyNowButton from "@/components/BuyNowButton";
+import OrderSummary from "@/components/OrderSummary";
+import PaymentForm from "@/components/PaymentForm";
+import PaymentMethods from "@/components/PaymentMethods";
+import { Colors } from "@/constants/theme";
+import { usePaymentForm } from "@/hooks/use-payment-form";
+import { useProductPricing } from "@/hooks/use-product-pricing";
+import { usePromoCode } from "@/hooks/use-promo-code";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
 import React, { useEffect, useMemo, useRef } from "react";
 import {
   KeyboardAvoidingView,
@@ -6,16 +16,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import BuyNowButton from "../../../components/BuyNowButton";
-import OrderSummary from "../../../components/OrderSummary";
-import PaymentForm from "../../../components/PaymentForm";
-import PaymentMethods from "../../../components/PaymentMethods";
-import { Colors } from "../../../constants/theme";
-import { usePaymentForm } from "../../../hooks/use-payment-form";
-import { useProductPricing } from "../../../hooks/use-product-pricing";
-import { usePromoCode } from "../../../hooks/use-promo-code";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../../store/paymentStore";
 
 const CheckoutScreen = () => {
   const colors = useThemeColors();

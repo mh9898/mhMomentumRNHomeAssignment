@@ -3,7 +3,7 @@ import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
 import { Image, StyleSheet, Text, View, ViewStyle } from "react-native";
 
-const lockIcon = require("../assets/icons/icon_lock_gray.png");
+const lockIcon = require("@/assets/icons/icon_lock_gray.png");
 
 interface PrivacyStatementProps {
   text?: string;

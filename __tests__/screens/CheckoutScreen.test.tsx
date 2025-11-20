@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import React from "react";
 import { Alert } from "react-native";
-import CheckoutScreen from "../../app/(app)/(payment)/checkout";
-import { usePaymentForm } from "../../hooks/use-payment-form";
-import { useProductPricing } from "../../hooks/use-product-pricing";
-import { usePromoCode } from "../../hooks/use-promo-code";
-import { useThemeColors } from "../../hooks/use-theme-colors";
-import { usePaymentStore } from "../../store/paymentStore";
+import CheckoutScreen from "@/app/(app)/(payment)/checkout";
+import { usePaymentForm } from "@/hooks/use-payment-form";
+import { useProductPricing } from "@/hooks/use-product-pricing";
+import { usePromoCode } from "@/hooks/use-promo-code";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({
@@ -17,23 +17,23 @@ jest.mock("expo-router", () => ({
 }));
 
 // Mock hooks
-jest.mock("../../hooks/use-theme-colors", () => ({
+jest.mock("@/hooks/use-theme-colors", () => ({
   useThemeColors: jest.fn(),
 }));
 
-jest.mock("../../hooks/use-product-pricing", () => ({
+jest.mock("@/hooks/use-product-pricing", () => ({
   useProductPricing: jest.fn(),
 }));
 
-jest.mock("../../hooks/use-promo-code", () => ({
+jest.mock("@/hooks/use-promo-code", () => ({
   usePromoCode: jest.fn(),
 }));
 
-jest.mock("../../hooks/use-payment-form", () => ({
+jest.mock("@/hooks/use-payment-form", () => ({
   usePaymentForm: jest.fn(),
 }));
 
-jest.mock("../../store/paymentStore", () => ({
+jest.mock("@/store/paymentStore", () => ({
   usePaymentStore: jest.fn(),
 }));
 

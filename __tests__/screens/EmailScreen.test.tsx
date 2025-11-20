@@ -6,8 +6,8 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import EmailScreen from "../../app/(app)/(payment)/email";
-import { usePaymentStore } from "../../store/paymentStore";
+import EmailScreen from "@/app/(app)/(payment)/email";
+import { usePaymentStore } from "@/store/paymentStore";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({
@@ -17,7 +17,7 @@ jest.mock("expo-router", () => ({
 }));
 
 // Mock Zustand store
-jest.mock("../../store/paymentStore", () => ({
+jest.mock("@/store/paymentStore", () => ({
   usePaymentStore: jest.fn(),
 }));
 

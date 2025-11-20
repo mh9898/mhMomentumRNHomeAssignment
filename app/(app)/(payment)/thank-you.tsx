@@ -8,9 +8,9 @@ import {
   Text,
   View,
 } from "react-native";
-import AppButton from "../../../components/AppButton";
-import { Colors, Fonts } from "../../../constants/theme";
-import { useThemeColors } from "../../../hooks/use-theme-colors";
+import AppButton from "@/components/AppButton";
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 const ThankYouScreen = () => {
   const colors = useThemeColors();
