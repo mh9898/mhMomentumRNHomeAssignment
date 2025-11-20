@@ -16,7 +16,12 @@ interface PaymentFormProps {
   onCVVChange: (text: string) => void;
   onNameOnCardChange: (text: string) => void;
   onInputFocus: () => void;
+  onCardNumberBlur?: () => void;
+  onExpiryDateBlur?: () => void;
+  onCvvBlur?: () => void;
   isExpiryDateInvalid?: boolean;
+  isCardNumberInvalid?: boolean;
+  isCvvInvalid?: boolean;
 }
 
 export default function PaymentForm({
@@ -29,12 +34,23 @@ export default function PaymentForm({
   onCVVChange,
   onNameOnCardChange,
   onInputFocus,
+  onCardNumberBlur,
+  onExpiryDateBlur,
+  onCvvBlur,
   isExpiryDateInvalid = false,
+  isCardNumberInvalid = false,
+  isCvvInvalid = false,
 }: PaymentFormProps) {
   const colors = useThemeColors();
   const styles = useMemo(
-    () => createStyles(colors, isExpiryDateInvalid),
-    [colors, isExpiryDateInvalid]
+    () =>
+      createStyles(
+        colors,
+        isExpiryDateInvalid,
+        isCardNumberInvalid,
+        isCvvInvalid
+      ),
+    [colors, isExpiryDateInvalid, isCardNumberInvalid, isCvvInvalid]
   );
 
   return (
@@ -47,8 +63,12 @@ export default function PaymentForm({
           onChangeText={onCardNumberChange}
           keyboardType="numeric"
           maxLength={19}
-          style={styles.cardNumberInput}
+          style={[
+            styles.cardNumberInput,
+            isCardNumberInvalid && styles.cardNumberInputInvalid,
+          ]}
           onFocus={onInputFocus}
+          onBlur={onCardNumberBlur}
         />
         <Image source={cardIcon} style={styles.cardIcon} resizeMode="contain" />
       </View>
@@ -66,6 +86,7 @@ export default function PaymentForm({
             isExpiryDateInvalid && styles.expiryInputInvalid,
           ]}
           onFocus={onInputFocus}
+          onBlur={onExpiryDateBlur}
         />
         <AppTextInput
           placeholder="CVV"
@@ -73,8 +94,9 @@ export default function PaymentForm({
           onChangeText={onCVVChange}
           keyboardType="numeric"
           maxLength={4}
-          style={styles.halfInput}
+          style={[styles.halfInput, isCvvInvalid && styles.cvvInputInvalid]}
           onFocus={onInputFocus}
+          onBlur={onCvvBlur}
         />
       </View>
 
@@ -93,7 +115,9 @@ export default function PaymentForm({
 
 const createStyles = (
   colors: typeof Colors.light,
-  isExpiryDateInvalid: boolean
+  isExpiryDateInvalid: boolean,
+  isCardNumberInvalid: boolean,
+  isCvvInvalid: boolean
 ) => {
   return StyleSheet.create({
     cardNumberContainer: {
@@ -111,6 +135,11 @@ const createStyles = (
       borderRadius: 8,
       paddingHorizontal: 16,
       backgroundColor: colors.background,
+    },
+    cardNumberInputInvalid: {
+      backgroundColor: colors.errorBackground,
+      borderColor: colors.error,
+      borderBottomColor: colors.error,
     },
     cardIcon: {
       position: "absolute",
@@ -151,6 +180,11 @@ const createStyles = (
       backgroundColor: colors.background,
     },
     expiryInputInvalid: {
+      backgroundColor: colors.errorBackground,
+      borderColor: colors.error,
+      borderBottomColor: colors.error,
+    },
+    cvvInputInvalid: {
       backgroundColor: colors.errorBackground,
       borderColor: colors.error,
       borderBottomColor: colors.error,

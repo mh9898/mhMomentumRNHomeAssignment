@@ -71,9 +71,14 @@ This project includes the following features and implementations:
   - Manages credit card form state (card number, expiry date, CVV, name on card)
   - Uses `paymentFormatting` utilities for automatic input formatting
   - Automatic formatting for card number (spaces every 4 digits) and expiry date (MM/YY)
-  - Real-time form validation
-  - Handles payment submission with simulated API call
+  - Real-time form validation with touch-based error display (errors shown after blur)
+  - Expiry date future validation (validates month range 01-12 and ensures date is not expired)
+  - Loading state management during payment processing
+  - Improved error handling with ref pattern to avoid stale closures
+  - Specific error messages for expired cards and invalid form fields
+  - Handles payment submission with simulated API call (90% success rate)
   - Navigation to thank you screen on successful payment
+  - Automatic cleanup of checkout price snapshot on successful purchase
 
 ### Theme System
 
@@ -122,7 +127,8 @@ This project includes the following features and implementations:
 
 - **BuyNowButton** (`components/BuyNowButton.tsx`): Payment submission button component
 
-  - Lock icon indicator for security
+  - Lock icon indicator for security (replaced with loading spinner during processing)
+  - Loading state support with ActivityIndicator and dynamic text ("Processing..." vs "Buy Now")
   - Disabled state handling with visual feedback
   - Fully accessible with proper labels and states
   - Theme-aware styling with success color scheme
@@ -209,14 +215,16 @@ This project includes the following features and implementations:
   - Order summary with locked pricing snapshot
   - Payment method icons display
   - Credit card form with validation
-  - Buy Now button with form validation
+  - Buy Now button with form validation and loading state
   - Keyboard-aware scrolling with auto-scroll on input focus
+  - Memory leak prevention with proper timeout cleanup on component unmount
   - Price locking mechanism to prevent changes during checkout
   - Integrated with payment form hook for state management
   - Theme-aware styling
 
 - **Thank You Screen** (`app/(app)/(payment)/thank-you.tsx`): Payment confirmation screen
-  - Success message display
+  - Success message display with themed styling
+  - Keyboard-aware layout with proper scrolling support
 
 ### Utilities
 

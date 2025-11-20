@@ -33,8 +33,13 @@ const CheckoutScreen = () => {
     setExpiryDate,
     setCvv,
     setNameOnCard,
+    onCardNumberBlur,
+    onExpiryDateBlur,
+    onCvvBlur,
     isFormValid,
     isExpiryDateInvalid,
+    isCardNumberInvalid,
+    isCvvInvalid,
     isLoading,
     handleBuyNow,
   } = usePaymentForm();
@@ -106,7 +111,12 @@ const CheckoutScreen = () => {
               onCVVChange={setCvv}
               onNameOnCardChange={setNameOnCard}
               onInputFocus={handleInputFocus}
+              onCardNumberBlur={onCardNumberBlur}
+              onExpiryDateBlur={onExpiryDateBlur}
+              onCvvBlur={onCvvBlur}
               isExpiryDateInvalid={isExpiryDateInvalid}
+              isCardNumberInvalid={isCardNumberInvalid}
+              isCvvInvalid={isCvvInvalid}
             />
 
             <View style={styles.buttonContainer}>

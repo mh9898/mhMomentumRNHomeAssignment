@@ -28,8 +28,13 @@ interface UsePaymentFormReturn {
   setExpiryDate: (text: string) => void;
   setCvv: (text: string) => void;
   setNameOnCard: (text: string) => void;
+  onCardNumberBlur: () => void;
+  onExpiryDateBlur: () => void;
+  onCvvBlur: () => void;
   isFormValid: boolean;
   isExpiryDateInvalid: boolean;
+  isCardNumberInvalid: boolean;
+  isCvvInvalid: boolean;
   isLoading: boolean;
   handleBuyNow: () => Promise<void>;
 }
@@ -45,6 +50,11 @@ export function usePaymentForm(): UsePaymentFormReturn {
   const [cvv, setCvvState] = useState("");
   const [nameOnCard, setNameOnCardState] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [touchedFields, setTouchedFields] = useState({
+    cardNumber: false,
+    expiryDate: false,
+    cvv: false,
+  });
   const previousExpiryDateRef = useRef("");
 
   const setCardNumber = useCallback((text: string) => {
@@ -82,6 +92,19 @@ export function usePaymentForm(): UsePaymentFormReturn {
 
   const setNameOnCard = useCallback((text: string) => {
     setNameOnCardState(text);
+  }, []);
+
+  // Blur handlers to mark fields as touched
+  const onCardNumberBlur = useCallback(() => {
+    setTouchedFields((prev) => ({ ...prev, cardNumber: true }));
+  }, []);
+
+  const onExpiryDateBlur = useCallback(() => {
+    setTouchedFields((prev) => ({ ...prev, expiryDate: true }));
+  }, []);
+
+  const onCvvBlur = useCallback(() => {
+    setTouchedFields((prev) => ({ ...prev, cvv: true }));
   }, []);
 
   // Validation helper function to check if expiry date is not expired
@@ -132,15 +155,38 @@ export function usePaymentForm(): UsePaymentFormReturn {
 
   const isFormValid = useMemo(() => validateForm(), [validateForm]);
 
-  // Check if expiry date is invalid (has been entered but is invalid or expired)
+  // Check if expiry date is invalid (only show after blur)
   const isExpiryDateInvalid = useMemo(() => {
+    if (!touchedFields.expiryDate) return false;
     const expiryCleaned = expiryDate.replace(/\//g, "");
     // Only show as invalid if user has entered something (at least 4 digits) but it's invalid
     if (expiryCleaned.length === EXPIRY_DATE_LENGTH) {
       return !isExpiryDateValid(expiryDate);
     }
     return false;
-  }, [expiryDate, isExpiryDateValid]);
+  }, [expiryDate, isExpiryDateValid, touchedFields.expiryDate]);
+
+  // Check if card number is invalid (only show after blur)
+  const isCardNumberInvalid = useMemo(() => {
+    if (!touchedFields.cardNumber) return false;
+    const cardNumberCleaned = cardNumber.replace(/\s/g, "");
+    // Only show as invalid if user has entered something but it's not 16 digits
+    if (cardNumberCleaned.length > 0) {
+      return cardNumberCleaned.length !== CARD_NUMBER_LENGTH;
+    }
+    return false;
+  }, [cardNumber, touchedFields.cardNumber]);
+
+  // Check if CVV is invalid (only show after blur)
+  const isCvvInvalid = useMemo(() => {
+    if (!touchedFields.cvv) return false;
+    // CVV should be 3 or 4 digits
+    // Only show as invalid if user has entered something but it's not valid
+    if (cvv.length > 0) {
+      return cvv.length < CVV_MIN_LENGTH || cvv.length > 4;
+    }
+    return false;
+  }, [cvv, touchedFields.cvv]);
 
   // Use ref to store the latest handleBuyNow function to avoid stale closure in error handler
   const handleBuyNowRef = useRef<(() => Promise<void>) | undefined>(undefined);
@@ -237,8 +283,13 @@ export function usePaymentForm(): UsePaymentFormReturn {
     setExpiryDate,
     setCvv,
     setNameOnCard,
+    onCardNumberBlur,
+    onExpiryDateBlur,
+    onCvvBlur,
     isFormValid,
     isExpiryDateInvalid,
+    isCardNumberInvalid,
+    isCvvInvalid,
     isLoading,
     handleBuyNow,
   };
