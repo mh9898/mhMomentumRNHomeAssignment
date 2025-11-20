@@ -33,6 +33,8 @@ export const Colors = {
     promoDashBackground: "#A5D6A7",
     promoCodeInputBorder: "#75A898",
     timerBoxBackground: "#CEEAE2",
+    screenBackground: "#F5F5F5", // Light gray background for screens
+    textSecondary: "#666666", // Secondary text color (e.g., for promo code text)
   },
   dark: {
     text: "#ECEDEE",
@@ -58,6 +60,8 @@ export const Colors = {
     promoDashBackground: "#3A6A5A",
     promoCodeInputBorder: "#4A7A6A",
     timerBoxBackground: "#2A4A3A",
+    screenBackground: "#1A1A1A", // Dark background for screens
+    textSecondary: "#9BA1A6", // Secondary text color (lighter gray for dark mode)
   },
 };
 
