@@ -1,32 +1,56 @@
+import { Fonts } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Stack } from "expo-router";
-import { Image } from "react-native";
+import { Image, Platform, StyleSheet, Text, View } from "react-native";
 
 const momentumLogo = require("@/assets/images/Logo_Momentum.png");
-const momentumLogo_white = require("@/assets/images/Logo_Momentum_white.png");
+const momentumLogoWhite = require("@/assets/images/Logo_Momentum_white.png");
+
+const LOGO_WIDTH = 120;
+const LOGO_HEIGHT = 30;
+const ANDROID_HEADER_MARGIN = 40;
+
+interface LogoHeaderProps {
+  includeAndroidMargin?: boolean;
+}
+
+const LogoHeader = ({ includeAndroidMargin = false }: LogoHeaderProps) => {
+  const colorScheme = useColorScheme();
+  const logoSource = colorScheme === "dark" ? momentumLogoWhite : momentumLogo;
+
+  return (
+    <View
+      style={[
+        styles.logoContainer,
+        includeAndroidMargin && styles.logoContainerWithMargin,
+      ]}
+    >
+      <Image source={logoSource} style={styles.logo} resizeMode="contain" />
+    </View>
+  );
+};
+
+const CheckoutHeader = () => {
+  const colors = useThemeColors();
+
+  return (
+    <View style={styles.checkoutHeaderContainer}>
+      <Text style={[styles.checkoutHeaderText, { color: colors.text }]}>
+        Complete Checkout
+      </Text>
+    </View>
+  );
+};
+
 const PaymentLayout = () => {
   const colors = useThemeColors();
-  const colorScheme = useColorScheme();
 
   return (
     <Stack
       screenOptions={{
         headerShown: true,
-        headerTitle: () =>
-          colorScheme === "dark" ? (
-            <Image
-              source={momentumLogo_white}
-              style={{ width: 120, height: 30 }}
-              resizeMode="contain"
-            />
-          ) : (
-            <Image
-              source={momentumLogo}
-              style={{ width: 120, height: 30 }}
-              resizeMode="contain"
-            />
-          ),
+        headerTitle: () => <LogoHeader includeAndroidMargin />,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: {
           backgroundColor: colors.background,
@@ -37,23 +61,51 @@ const PaymentLayout = () => {
         },
       }}
     >
-      <Stack.Screen name="email" />
+      <Stack.Screen
+        name="email"
+        options={{
+          headerTitle: () => <LogoHeader />,
+        }}
+      />
       <Stack.Screen name="name" />
       <Stack.Screen name="product" />
       <Stack.Screen
         name="checkout"
         options={{
-          headerTitle: "Complete Checkout",
+          headerTitle: () => <CheckoutHeader />,
         }}
       />
       <Stack.Screen
         name="thank-you"
         options={{
           headerBackVisible: false,
+          headerTitle: () => <LogoHeader />,
         }}
       />
     </Stack>
   );
 };
+
+const styles = StyleSheet.create({
+  logoContainer: {
+    alignItems: "center",
+  },
+  logoContainerWithMargin: {
+    marginRight: Platform.OS === "android" ? ANDROID_HEADER_MARGIN : 0,
+  },
+  logo: {
+    width: LOGO_WIDTH,
+    height: LOGO_HEIGHT,
+  },
+  checkoutHeaderContainer: {
+    alignItems: "center",
+    marginRight: Platform.OS === "android" ? ANDROID_HEADER_MARGIN : 0,
+  },
+  checkoutHeaderText: {
+    fontFamily: Fonts.gothicA1SemiBold,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
 
 export default PaymentLayout;

@@ -25,7 +25,15 @@ export default function AppTitle({
 }: ScreenTitleProps) {
   const colors = useThemeColors();
   const styles = useMemo(
-    () => createStyles(colors, fontSize, lineHeight, textAlign, marginBottom, margin),
+    () =>
+      createStyles(
+        colors,
+        fontSize,
+        lineHeight,
+        textAlign,
+        marginBottom,
+        margin
+      ),
     [colors, fontSize, lineHeight, textAlign, marginBottom, margin]
   );
 
@@ -56,4 +64,3 @@ const createStyles = (
     },
   });
 };
-

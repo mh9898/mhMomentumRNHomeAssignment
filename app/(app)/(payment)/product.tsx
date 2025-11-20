@@ -1,3 +1,11 @@
+import AppButton from "@/components/AppButton";
+import PlanCard from "@/components/PlanCard";
+import PromoCodeSection from "@/components/PromoCodeSection";
+import { Colors, Fonts } from "@/constants/theme";
+import { useProductPricing } from "@/hooks/use-product-pricing";
+import { usePromoCode } from "@/hooks/use-promo-code";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -8,14 +16,6 @@ import {
   Text,
   View,
 } from "react-native";
-import AppButton from "@/components/AppButton";
-import PlanCard from "@/components/PlanCard";
-import PromoCodeSection from "@/components/PromoCodeSection";
-import { Colors, Fonts } from "@/constants/theme";
-import { useProductPricing } from "@/hooks/use-product-pricing";
-import { usePromoCode } from "@/hooks/use-promo-code";
-import { useThemeColors } from "@/hooks/use-theme-colors";
-import { usePaymentStore } from "@/store/paymentStore";
 
 const ProductScreen = () => {
   const colors = useThemeColors();
@@ -94,7 +94,7 @@ const createStyles = (colors: typeof Colors.light) => {
     },
     title: {
       fontFamily: Fonts.gothicA1SemiBold,
-      fontSize: 22,
+      fontSize: Platform.OS === "android" ? 21 : 22,
       fontWeight: "600",
       color: colors.text,
       margin: 16,

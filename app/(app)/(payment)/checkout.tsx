@@ -77,7 +77,7 @@ const CheckoutScreen = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 4 : -120}
     >
       <ScrollView
         ref={scrollViewRef}

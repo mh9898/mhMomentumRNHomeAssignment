@@ -77,6 +77,7 @@ const createStyles = (colors: typeof Colors.light, disabled: boolean) => {
       justifyContent: "center",
       alignItems: "center",
       marginTop: "auto",
+      marginBottom: 30,
     },
     buttonDisabled: {
       backgroundColor: colors.buttonDisabledColor,
