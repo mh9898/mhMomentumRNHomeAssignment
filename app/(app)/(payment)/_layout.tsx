@@ -1,23 +1,32 @@
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Stack } from "expo-router";
 import { Image } from "react-native";
 
 const momentumLogo = require("@/assets/images/Logo_Momentum.png");
-
+const momentumLogo_white = require("@/assets/images/Logo_Momentum_white.png");
 const PaymentLayout = () => {
   const colors = useThemeColors();
+  const colorScheme = useColorScheme();
 
   return (
     <Stack
       screenOptions={{
         headerShown: true,
-        headerTitle: () => (
-          <Image
-            source={momentumLogo}
-            style={{ width: 120, height: 30 }}
-            resizeMode="contain"
-          />
-        ),
+        headerTitle: () =>
+          colorScheme === "dark" ? (
+            <Image
+              source={momentumLogo_white}
+              style={{ width: 120, height: 30 }}
+              resizeMode="contain"
+            />
+          ) : (
+            <Image
+              source={momentumLogo}
+              style={{ width: 120, height: 30 }}
+              resizeMode="contain"
+            />
+          ),
         headerBackButtonDisplayMode: "minimal",
         headerStyle: {
           backgroundColor: colors.background,
