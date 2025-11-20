@@ -33,7 +33,7 @@ You can start developing by editing the files inside the **app** directory. This
 
 ## Demo
 
-<video src="assets/videos/momentum_demo.mp4" controls width="100%"></video>
+[Watch Demo Video](assets/videos/momentum_demo.mp4)
 
 ## Features
 
