@@ -31,6 +31,10 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Demo
+
+<video src="assets/videos/momentum_demo.mp4" controls width="100%"></video>
+
 ## Features
 
 This project includes the following features and implementations:
@@ -283,6 +287,10 @@ This project includes the following features and implementations:
   - Coverage reporting support
 
 ### Assets
+
+- **Videos** (`assets/videos/`): App demonstration videos
+
+  - Demo video (`momentum_demo.mp4`) showcasing app features and user flow
 
 - **Icons** (`assets/icons/`): Payment and UI icons
 
