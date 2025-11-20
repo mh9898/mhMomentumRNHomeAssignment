@@ -6,24 +6,28 @@ import {
   TextInputProps,
   View,
 } from "react-native";
-import { Colors } from "../constants/theme";
+import { Colors, Fonts } from "../constants/theme";
 import { useThemeColors } from "../hooks/use-theme-colors";
 
 interface AppTextInputProps extends TextInputProps {
   error?: string | null;
   isValid?: boolean;
+  fontSize?: number;
+  fontFamily?: string;
 }
 
 export default function AppTextInput({
   error,
   isValid,
+  fontSize = 16,
+  fontFamily,
   style,
   ...textInputProps
 }: AppTextInputProps) {
   const colors = useThemeColors();
   const styles = useMemo(
-    () => createStyles(colors, error, isValid),
-    [colors, error, isValid]
+    () => createStyles(colors, error, isValid, fontSize, fontFamily),
+    [colors, error, isValid, fontSize, fontFamily]
   );
 
   return (
@@ -41,7 +45,9 @@ export default function AppTextInput({
 const createStyles = (
   colors: typeof Colors.light,
   error?: string | null,
-  isValid?: boolean
+  isValid?: boolean,
+  fontSize: number = 16,
+  fontFamily?: string
 ) => {
   return StyleSheet.create({
     inputContainer: {
@@ -55,12 +61,14 @@ const createStyles = (
         ? colors.text
         : colors.border,
       paddingVertical: 12,
-      fontSize: 16,
+      fontSize,
+      fontFamily,
       color: colors.text,
       backgroundColor: error ? colors.errorBackground : colors.background,
       textAlign: "center",
     },
     errorText: {
+      fontFamily: Fonts.gothicA1SemiBold,
       color: colors.error,
       fontSize: 14,
       marginTop: 8,

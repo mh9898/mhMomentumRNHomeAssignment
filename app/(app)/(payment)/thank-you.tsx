@@ -18,7 +18,7 @@ const ThankYouScreen = () => {
 
   const handleContinue = () => {
     // Navigate back to product screen or home
-    router.replace("/(app)/(payment)/product");
+    router.replace("./product");
   };
 
   return (

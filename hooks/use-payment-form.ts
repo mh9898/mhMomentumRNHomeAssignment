@@ -1,7 +1,12 @@
 import { router } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert } from "react-native";
 import { usePaymentStore } from "../store/paymentStore";
+import {
+  formatCardNumber,
+  formatCVV,
+  formatExpiryDate,
+} from "../utils/paymentFormatting";
 
 // Constants
 const PAYMENT_SUCCESS_RATE = 0.9; // 90% success rate for demo
@@ -9,7 +14,6 @@ const API_CALL_DELAY_MS = 1000; // Simulated API call delay
 const CARD_NUMBER_LENGTH = 16;
 const EXPIRY_DATE_LENGTH = 4;
 const CVV_MIN_LENGTH = 3;
-const CARD_NUMBER_MAX_LENGTH = 19; // 16 digits + 3 spaces
 
 interface PaymentFormState {
   cardNumber: string;
@@ -39,55 +43,24 @@ export function usePaymentForm(): UsePaymentFormReturn {
   const [cvv, setCvvState] = useState("");
   const [nameOnCard, setNameOnCardState] = useState("");
 
-  const formatCardNumber = useCallback((text: string) => {
-    // Remove all non-digits
-    const cleaned = text.replace(/\D/g, "");
-    // Add spaces every 4 digits
-    const formatted = cleaned.match(/.{1,4}/g)?.join(" ") || cleaned;
-    return formatted.substring(0, CARD_NUMBER_MAX_LENGTH);
+  const setCardNumber = useCallback((text: string) => {
+    setCardNumberState(formatCardNumber(text));
   }, []);
 
-  const formatExpiryDate = useCallback((text: string) => {
-    // Remove all non-digits
-    const cleaned = text.replace(/\D/g, "");
-    // Add slash after 2 digits
-    if (cleaned.length >= 2) {
-      return `${cleaned.substring(0, 2)}/${cleaned.substring(2, 4)}`;
-    }
-    return cleaned;
+  const setExpiryDate = useCallback((text: string) => {
+    setExpiryDateState(formatExpiryDate(text));
   }, []);
 
-  const formatCVV = useCallback((text: string) => {
-    // Only allow digits, max 4 characters
-    return text.replace(/\D/g, "").substring(0, 4);
+  const setCvv = useCallback((text: string) => {
+    setCvvState(formatCVV(text));
   }, []);
-
-  const setCardNumber = useCallback(
-    (text: string) => {
-      setCardNumberState(formatCardNumber(text));
-    },
-    [formatCardNumber]
-  );
-
-  const setExpiryDate = useCallback(
-    (text: string) => {
-      setExpiryDateState(formatExpiryDate(text));
-    },
-    [formatExpiryDate]
-  );
-
-  const setCvv = useCallback(
-    (text: string) => {
-      setCvvState(formatCVV(text));
-    },
-    [formatCVV]
-  );
 
   const setNameOnCard = useCallback((text: string) => {
     setNameOnCardState(text);
   }, []);
 
-  const isFormValid = useCallback(() => {
+  // Validation helper function
+  const validateForm = useCallback(() => {
     const cardNumberCleaned = cardNumber.replace(/\s/g, "");
     const expiryCleaned = expiryDate.replace(/\//g, "");
     return (
@@ -98,69 +71,77 @@ export function usePaymentForm(): UsePaymentFormReturn {
     );
   }, [cardNumber, expiryDate, cvv, nameOnCard]);
 
-  const handleBuyNow = useCallback(async () => {
-    const cardNumberCleaned = cardNumber.replace(/\s/g, "");
-    const expiryCleaned = expiryDate.replace(/\//g, "");
-    const isValid =
-      cardNumberCleaned.length === CARD_NUMBER_LENGTH &&
-      expiryCleaned.length === EXPIRY_DATE_LENGTH &&
-      cvv.length >= CVV_MIN_LENGTH &&
-      nameOnCard.trim().length > 0;
+  const isFormValid = useMemo(() => validateForm(), [validateForm]);
 
-    if (!isValid) {
-      Alert.alert(
-        "Invalid Form",
-        "Please fill in all payment details correctly."
-      );
-      return;
-    }
+  // Use ref to store the latest handleBuyNow function to avoid stale closure in error handler
+  const handleBuyNowRef = useRef<(() => Promise<void>) | undefined>(undefined);
 
-    // Mock checkout session
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, API_CALL_DELAY_MS));
-
-      // Mock success - in a real app, this would be an API call
-      const success = Math.random() > 1 - PAYMENT_SUCCESS_RATE;
-
-      if (success) {
-        // Clear checkout snapshot on successful purchase
-        clearCheckoutPriceSnapshot();
-        // Navigate to thank you screen
-        router.replace("./thank-you");
-      } else {
-        // Show cancel/error alert
+  // Update the ref whenever dependencies change
+  useEffect(() => {
+    handleBuyNowRef.current = async () => {
+      if (!validateForm()) {
         Alert.alert(
-          "Payment Failed",
-          "Your payment could not be processed. Please try again.",
+          "Invalid Form",
+          "Please fill in all payment details correctly."
+        );
+        return;
+      }
+
+      // Mock checkout session
+      try {
+        // Simulate API call delay
+        await new Promise((resolve) => setTimeout(resolve, API_CALL_DELAY_MS));
+
+        // Mock success - in a real app, this would be an API call
+        const success = Math.random() > 1 - PAYMENT_SUCCESS_RATE;
+
+        if (success) {
+          // Clear checkout snapshot on successful purchase
+          clearCheckoutPriceSnapshot();
+          // Navigate to thank you screen
+          router.replace("./thank-you");
+        } else {
+          // Show cancel/error alert
+          Alert.alert(
+            "Payment Failed",
+            "Your payment could not be processed. Please try again.",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  // Stay on checkout screen
+                },
+              },
+            ]
+          );
+        }
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          "An error occurred during checkout. Please try again.",
           [
             {
-              text: "OK",
+              text: "Cancel",
+              style: "cancel",
+              onPress: () => router.back(),
+            },
+            {
+              text: "Retry",
               onPress: () => {
-                // Stay on checkout screen
+                // Use ref to get the latest function reference
+                handleBuyNowRef.current?.();
               },
             },
           ]
         );
       }
-    } catch (error) {
-      Alert.alert(
-        "Error",
-        "An error occurred during checkout. Please try again.",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-            onPress: () => router.back(),
-          },
-          {
-            text: "Retry",
-            onPress: handleBuyNow,
-          },
-        ]
-      );
-    }
-  }, [cardNumber, expiryDate, cvv, nameOnCard, clearCheckoutPriceSnapshot]);
+    };
+  }, [validateForm, clearCheckoutPriceSnapshot]);
+
+  // Wrap the ref function in a stable callback
+  const handleBuyNow = useCallback(async () => {
+    await handleBuyNowRef.current?.();
+  }, []);
 
   return {
     formState: {
@@ -173,7 +154,7 @@ export function usePaymentForm(): UsePaymentFormReturn {
     setExpiryDate,
     setCvv,
     setNameOnCard,
-    isFormValid: isFormValid(),
+    isFormValid,
     handleBuyNow,
   };
 }

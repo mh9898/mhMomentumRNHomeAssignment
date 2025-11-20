@@ -7,6 +7,7 @@ import {
 import { router } from "expo-router";
 import React from "react";
 import NameScreen from "../../app/(app)/(payment)/name";
+import { useThemeColors } from "../../hooks/use-theme-colors";
 import { usePaymentStore } from "../../store/paymentStore";
 
 // Mock expo-router
@@ -14,6 +15,11 @@ jest.mock("expo-router", () => ({
   router: {
     push: jest.fn(),
   },
+}));
+
+// Mock hooks
+jest.mock("../../hooks/use-theme-colors", () => ({
+  useThemeColors: jest.fn(),
 }));
 
 // Mock Zustand store
@@ -26,8 +32,22 @@ describe("NameScreen", () => {
   const mockLogMMKV_Zustand = jest.fn();
   const mockName = "";
 
+  const mockColors = {
+    background: "#FFFFFF",
+    text: "#000000",
+    buttonBackground: "#007AFF",
+    buttonText: "#FFFFFF",
+    border: "#E0E0E0",
+    icon: "#999999",
+    error: "#FF0000",
+    errorBackground: "#FFF5F5",
+    screenBackground: "#F5F5F5",
+    textSecondary: "#666666",
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    (useThemeColors as jest.Mock).mockReturnValue(mockColors);
     (usePaymentStore as unknown as jest.Mock).mockReturnValue({
       name: mockName,
       setName: mockSetName,
@@ -39,7 +59,7 @@ describe("NameScreen", () => {
   it("should display error message when name is invalid (less than 3 characters)", async () => {
     render(<NameScreen />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const nameInput = screen.getByPlaceholderText("Name");
 
     // Enter invalid name (too short)
     fireEvent.changeText(nameInput, "Jo");
@@ -54,7 +74,7 @@ describe("NameScreen", () => {
   it("should display error message when name contains non-alphabetic characters", async () => {
     render(<NameScreen />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const nameInput = screen.getByPlaceholderText("Name");
 
     // Enter invalid name (contains numbers)
     fireEvent.changeText(nameInput, "John123");
@@ -69,7 +89,7 @@ describe("NameScreen", () => {
   it("should disable Continue button when name is invalid", async () => {
     render(<NameScreen />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const nameInput = screen.getByPlaceholderText("Name");
     const continueButton = screen.getByText(/continue/i);
 
     // Enter invalid name
@@ -99,7 +119,7 @@ describe("NameScreen", () => {
   it("should enable Continue button, store name, and navigate when name is valid", async () => {
     render(<NameScreen />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const nameInput = screen.getByPlaceholderText("Name");
     const continueButton = screen.getByText(/continue/i);
     const validName = "John Doe";
 
@@ -137,7 +157,7 @@ describe("NameScreen", () => {
   it("should accept valid name with spaces", async () => {
     render(<NameScreen />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const nameInput = screen.getByPlaceholderText("Name");
     const continueButton = screen.getByText(/continue/i);
     const validNameWithSpaces = "Mary Jane Watson";
 
@@ -160,7 +180,7 @@ describe("NameScreen", () => {
   it("should not show error message when name input is empty", () => {
     render(<NameScreen />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
+    const nameInput = screen.getByPlaceholderText("Name");
 
     // Input should be empty initially
     expect(nameInput.props.value).toBe("");

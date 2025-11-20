@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# Welcome to your Momentum app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -69,6 +69,7 @@ This project includes the following features and implementations:
 
 - **usePaymentForm** (`hooks/use-payment-form.ts`): Payment form management hook
   - Manages credit card form state (card number, expiry date, CVV, name on card)
+  - Uses `paymentFormatting` utilities for automatic input formatting
   - Automatic formatting for card number (spaces every 4 digits) and expiry date (MM/YY)
   - Real-time form validation
   - Handles payment submission with simulated API call
@@ -79,7 +80,8 @@ This project includes the following features and implementations:
 - **Theme Configuration** (`constants/theme.ts`): Complete light/dark mode support
   - Color definitions for light and dark themes
   - Custom Gothic A1 font family (Regular, Medium, SemiBold, Bold)
-  - Extended color palette for plan cards, promo sections, timers, and UI elements
+  - Extended color palette for plan cards, promo sections, timers, privacy statements, and UI elements
+  - Privacy statement text color (`textPrivacyStatement`) for consistent styling
   - Theme hooks (`hooks/use-theme-colors.ts`, `hooks/use-color-scheme.ts`) for accessing theme colors
   - Automatic color scheme detection based on system preferences
 
@@ -146,23 +148,49 @@ This project includes the following features and implementations:
   - Theme-aware styling
 
 - **PaymentMethods** (`components/PaymentMethods.tsx`): Payment method icons display
+
   - Displays supported payment method icons (Visa, Mastercard, Maestro, Amex, Discover)
   - Horizontal layout with proper spacing
   - Visual indication of accepted payment methods
+
+- **AppTitle** (`components/AppTitle.tsx`): Reusable title component for screens
+
+  - Customizable font size, line height, and text alignment
+  - Configurable margins for flexible layout
+  - Uses Gothic A1 SemiBold font family
+  - Theme-aware text color
+  - Used across Email and Name screens for consistent typography
+
+- **ScreenTitle** (`components/ScreenTitle.tsx`): Screen title component
+
+  - Similar to AppTitle with customizable styling options
+  - Flexible margin and spacing configuration
+  - Theme-aware styling with Gothic A1 SemiBold font
+  - Supports custom text alignment and line height
+
+- **PrivacyStatement** (`components/PrivacyStatement.tsx`): Privacy statement display component
+  - Displays privacy message with lock icon indicator
+  - Customizable text content with default message
+  - Configurable margins for flexible positioning
+  - Lock icon with theme-aware tint color
+  - Used in Email and Name screens for consistent privacy messaging
+  - Theme-aware text color using `textPrivacyStatement` color
 
 ### Screens
 
 - **Email Screen** (`app/(app)/(payment)/email.tsx`): Email collection screen
 
   - Email validation with real-time feedback
-  - Privacy statement display
+  - Uses `AppTitle` component for consistent screen title styling
+  - Uses `PrivacyStatement` component for privacy messaging
   - Navigation to Name screen
 
 - **Name Screen** (`app/(app)/(payment)/name.tsx`): Name collection and discount code generation
 
   - Name validation (minimum 3 letters, alphabetic only)
   - Personalized discount code generation (format: `name_monthyear`)
-  - Privacy statement display
+  - Uses `AppTitle` component for consistent screen title styling
+  - Uses `PrivacyStatement` component for privacy messaging
   - Navigation to Product screen
 
 - **Product Screen** (`app/(app)/(payment)/product.tsx`): Product selection and pricing display
@@ -205,8 +233,23 @@ This project includes the following features and implementations:
   - Trims whitespace automatically
 
 - **Email Validation** (`utils/emailValidation.ts`): Validates email input format
+
   - Standard email format validation
   - Real-time validation feedback
+
+- **Payment Formatting** (`utils/paymentFormatting.ts`): Payment form input formatting utilities
+  - `formatCardNumber`: Formats card numbers with spaces every 4 digits (e.g., "1234 5678 9012 3456")
+    - Removes non-digit characters
+    - Limits to maximum length (19 characters including spaces)
+  - `formatExpiryDate`: Formats and validates expiry dates as MM/YY
+    - Validates month range (01-12)
+    - Rejects invalid month inputs in real-time
+    - Automatically adds slash separator after month
+  - `formatCVV`: Formats CVV input by removing non-digits
+    - Limits to maximum length (4 characters)
+    - Ensures numeric-only input
+  - Comprehensive JSDoc documentation with examples
+  - Used by `usePaymentForm` hook for consistent formatting across the app
 
 ### Testing
 
@@ -234,9 +277,16 @@ This project includes the following features and implementations:
 ### Assets
 
 - **Icons** (`assets/icons/`): Payment and UI icons
+
   - Payment method icons: Visa, Mastercard, Maestro, American Express, Discover
-  - UI icons: Lock, Card, Coupon, Fire
+  - UI icons: Lock, Lock Gray, Card, Coupon, Fire, Arrow Right
   - PNG format with proper sizing for mobile display
+  - Lock Gray icon used in PrivacyStatement component
+  - Arrow Right icon used in AppButton component for navigation indicators
+
+- **Images** (`assets/images/`): App branding and logo assets
+  - Momentum logo (`Logo_Momentum.png`) for app branding
+  - App icons and splash screen assets for iOS and Android
 
 ### Scripts
 

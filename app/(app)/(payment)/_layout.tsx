@@ -1,5 +1,8 @@
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Stack } from "expo-router";
+import { Image } from "react-native";
+
+const momentumLogo = require("../../../assets/images/Logo_Momentum.png");
 
 const PaymentLayout = () => {
   const colors = useThemeColors();
@@ -8,7 +11,13 @@ const PaymentLayout = () => {
     <Stack
       screenOptions={{
         headerShown: true,
-        headerTitle: "Momentum",
+        headerTitle: () => (
+          <Image
+            source={momentumLogo}
+            style={{ width: 120, height: 30 }}
+            resizeMode="contain"
+          />
+        ),
         headerBackButtonDisplayMode: "minimal",
         headerStyle: {
           backgroundColor: colors.background,
