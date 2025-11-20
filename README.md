@@ -33,8 +33,7 @@ You can start developing by editing the files inside the **app** directory. This
 
 ## Demo
 
-https://github.com/user-attachments/assets/7089944b-d909-4879-b6a0-f9bd4e1c18ab
-
+https://github.com/user-attachments/assets/ae48bbd0-4ba3-422c-9894-2348344cc99f
 
 ## Features
 
