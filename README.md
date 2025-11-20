@@ -33,7 +33,8 @@ You can start developing by editing the files inside the **app** directory. This
 
 ## Demo
 
-[Watch Demo Video](assets/videos/momentum_demo.mp4)
+https://github.com/user-attachments/assets/7089944b-d909-4879-b6a0-f9bd4e1c18ab
+
 
 ## Features
 
@@ -287,10 +288,6 @@ This project includes the following features and implementations:
   - Coverage reporting support
 
 ### Assets
-
-- **Videos** (`assets/videos/`): App demonstration videos
-
-  - Demo video (`momentum_demo.mp4`) showcasing app features and user flow
 
 - **Icons** (`assets/icons/`): Payment and UI icons
 
