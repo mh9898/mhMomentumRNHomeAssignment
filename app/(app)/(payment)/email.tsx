@@ -1,6 +1,3 @@
-import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import AppButton from "@/components/AppButton";
 import AppTextInput from "@/components/AppTextInput";
 import AppTitle from "@/components/AppTitle";
@@ -9,6 +6,9 @@ import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { usePaymentStore } from "@/store/paymentStore";
 import { isValidEmail } from "@/utils/emailValidation";
+import { router } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 
 const arrowIcon = require("@/assets/icons/icon_arrow_right.png");
 
@@ -52,7 +52,11 @@ const EmailScreen = () => {
     >
       <View style={styles.content}>
         {/* Title */}
-        <AppTitle lineHeight={34}>
+        <AppTitle
+          fontSize={Platform.OS === "android" ? 24 : 26}
+          lineHeight={34}
+          numberOfLines={3}
+        >
           Enter your email to get your personalized Calisthenics Workout Plan
         </AppTitle>
 

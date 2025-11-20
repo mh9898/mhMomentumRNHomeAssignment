@@ -81,6 +81,7 @@ export default function PaymentForm({
           onChangeText={onExpiryDateChange}
           keyboardType="numeric"
           maxLength={5}
+          containerStyle={styles.halfInputContainer}
           style={[
             styles.halfInput,
             isExpiryDateInvalid && styles.expiryInputInvalid,
@@ -94,6 +95,7 @@ export default function PaymentForm({
           onChangeText={onCVVChange}
           keyboardType="numeric"
           maxLength={4}
+          containerStyle={styles.halfInputContainer}
           style={[styles.halfInput, isCvvInvalid && styles.cvvInputInvalid]}
           onFocus={onInputFocus}
           onBlur={onCvvBlur}
@@ -149,12 +151,15 @@ const createStyles = (
       height: 20,
     },
     rowInputs: {
-      flex: 1,
       flexDirection: "row",
       gap: 12,
+      paddingBottom: 12,
+    },
+    halfInputContainer: {
+      flex: 1,
+      marginBottom: 0,
     },
     halfInput: {
-      flex: 1,
       fontFamily: Fonts.gothicA1Medium,
       fontSize: 15,
       fontWeight: "500",
@@ -163,8 +168,7 @@ const createStyles = (
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 8,
-      paddingRight: 92,
-      paddingLeft: 16,
+      paddingHorizontal: 16,
       backgroundColor: colors.background,
     },
     nameOnCardInput: {

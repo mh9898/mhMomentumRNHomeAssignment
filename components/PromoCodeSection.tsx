@@ -1,7 +1,9 @@
-import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import React, { useMemo } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+
+const couponIcon = require("@/assets/icons/icon_coupon_green.png");
 
 // Constants
 const DASHED_LINE_SEGMENT_COUNT = 60;
@@ -24,9 +26,12 @@ export default function PromoCodeSection({
     <View style={styles.promoSection} accessibilityLabel="Promo code section">
       {/* Header Banner */}
       <View style={styles.promoBanner}>
-        <Text style={styles.promoIcon} accessibilityLabel="Promo code icon">
-          🏷️
-        </Text>
+        <Image
+          source={couponIcon}
+          style={styles.promoIcon}
+          resizeMode="contain"
+          accessibilityLabel="Promo code icon"
+        />
         <Text style={styles.promoBannerText}>Your Promo Code is Applied!</Text>
       </View>
 
@@ -92,7 +97,8 @@ const createStyles = (colors: typeof Colors.light) => {
       marginVertical: 16,
     },
     promoIcon: {
-      fontSize: 20,
+      width: 20,
+      height: 20,
       marginRight: 8,
     },
     promoBannerText: {

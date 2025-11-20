@@ -1,3 +1,5 @@
+import { Colors, Fonts } from "@/constants/theme";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
 import {
   StyleSheet,
@@ -5,15 +7,15 @@ import {
   TextInput,
   TextInputProps,
   View,
+  ViewStyle,
 } from "react-native";
-import { Colors, Fonts } from "@/constants/theme";
-import { useThemeColors } from "@/hooks/use-theme-colors";
 
 interface AppTextInputProps extends TextInputProps {
   error?: string | null;
   isValid?: boolean;
   fontSize?: number;
   fontFamily?: string;
+  containerStyle?: ViewStyle;
 }
 
 export default function AppTextInput({
@@ -22,6 +24,7 @@ export default function AppTextInput({
   fontSize = 16,
   fontFamily,
   style,
+  containerStyle,
   ...textInputProps
 }: AppTextInputProps) {
   const colors = useThemeColors();
@@ -31,7 +34,7 @@ export default function AppTextInput({
   );
 
   return (
-    <View style={styles.inputContainer}>
+    <View style={[styles.inputContainer, containerStyle]}>
       <TextInput
         style={[styles.input, style]}
         placeholderTextColor={error ? colors.error : colors.icon}
