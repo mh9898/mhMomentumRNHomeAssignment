@@ -1,6 +1,7 @@
 import { Fonts } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { normalizeFont } from "@/utils/responsiveText";
 import { Stack } from "expo-router";
 import { Image, Platform, StyleSheet, Text, View } from "react-native";
 
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   },
   checkoutHeaderText: {
     fontFamily: Fonts.gothicA1SemiBold,
-    fontSize: 20,
+    fontSize: Platform.OS === "android" ? 20 : normalizeFont(20),
     fontWeight: "bold",
   },
 });

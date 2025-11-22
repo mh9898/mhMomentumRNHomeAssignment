@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import React, { useMemo } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import AppText from "./AppText";
 
 const couponIcon = require("@/assets/icons/icon_coupon.png");
 const fireIcon = require("@/assets/icons/icon_fire.png");
@@ -28,17 +29,19 @@ export default function OrderSummary({
     <>
       {/* Plan Details */}
       <View style={styles.orderRow}>
-        <Text style={styles.orderLabel}>4 Week Plan</Text>
-        <Text style={styles.orderValue}>${originalPrice.toFixed(2)}</Text>
+        <AppText style={styles.orderLabel}>4 Week Plan</AppText>
+        <AppText style={styles.orderValue}>${originalPrice.toFixed(2)}</AppText>
       </View>
 
       {/* Discount */}
       {lockedDiscountActive && (
         <View style={styles.orderRow}>
-          <Text style={styles.discountLabel}>Your 50% intro discount</Text>
-          <Text style={styles.discountValue}>
+          <AppText style={styles.discountLabel}>
+            Your 50% intro discount
+          </AppText>
+          <AppText style={styles.discountValue}>
             -${discountAmount.toFixed(2)}
-          </Text>
+          </AppText>
         </View>
       )}
 
@@ -50,17 +53,17 @@ export default function OrderSummary({
             style={styles.promoCodeIcon}
             resizeMode="contain"
           />
-          <Text style={styles.promoCodeText}>
+          <AppText style={styles.promoCodeText}>
             Applied promo code:{" "}
-            <Text style={styles.promoCodeBold}>{promoCode}</Text>
-          </Text>
+            <AppText style={styles.promoCodeBold}>{promoCode}</AppText>
+          </AppText>
         </View>
       )}
 
       {/* Total */}
       <View style={styles.totalRow}>
-        <Text style={styles.totalLabel}>Total today:</Text>
-        <Text style={styles.totalValue}>${lockedPrice.toFixed(2)}</Text>
+        <AppText style={styles.totalLabel}>Total today:</AppText>
+        <AppText style={styles.totalValue}>${lockedPrice.toFixed(2)}</AppText>
       </View>
 
       {/* Savings Message */}
@@ -71,9 +74,9 @@ export default function OrderSummary({
             style={styles.savingsIcon}
             resizeMode="contain"
           />
-          <Text style={styles.savingsText}>
+          <AppText style={styles.savingsText}>
             You just saved ${discountAmount.toFixed(2)} (50% OFF)
-          </Text>
+          </AppText>
         </View>
       )}
     </>

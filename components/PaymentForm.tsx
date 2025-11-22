@@ -1,8 +1,9 @@
 import AppTextInput from "@/components/AppTextInput";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { normalizeFont } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Platform, StyleSheet, View } from "react-native";
 
 const cardIcon = require("@/assets/icons/icon_card.png");
 
@@ -42,17 +43,18 @@ export default function PaymentForm({
   isCvvInvalid = false,
 }: PaymentFormProps) {
   const colors = useThemeColors();
+  const isAndroid = Platform.OS === "android";
   const styles = useMemo(
     () =>
       createStyles(
         colors,
         isExpiryDateInvalid,
         isCardNumberInvalid,
-        isCvvInvalid
+        isCvvInvalid,
+        isAndroid
       ),
-    [colors, isExpiryDateInvalid, isCardNumberInvalid, isCvvInvalid]
+    [colors, isExpiryDateInvalid, isCardNumberInvalid, isCvvInvalid, isAndroid]
   );
-
   return (
     <View>
       {/* Credit Card Number */}
@@ -119,7 +121,8 @@ const createStyles = (
   colors: typeof Colors.light,
   isExpiryDateInvalid: boolean,
   isCardNumberInvalid: boolean,
-  isCvvInvalid: boolean
+  isCvvInvalid: boolean,
+  isAndroid: boolean
 ) => {
   return StyleSheet.create({
     cardNumberContainer: {
@@ -127,7 +130,7 @@ const createStyles = (
     },
     cardNumberInput: {
       fontFamily: Fonts.gothicA1Medium,
-      fontSize: 15,
+      fontSize: isAndroid ? 15 : normalizeFont(15),
       fontWeight: "500",
       paddingRight: 50,
       textAlign: "left",
@@ -161,7 +164,7 @@ const createStyles = (
     },
     halfInput: {
       fontFamily: Fonts.gothicA1Medium,
-      fontSize: 15,
+      fontSize: isAndroid ? 15 : normalizeFont(15),
       fontWeight: "500",
       textAlign: "left",
       height: 54,
@@ -173,7 +176,7 @@ const createStyles = (
     },
     nameOnCardInput: {
       fontFamily: Fonts.gothicA1Medium,
-      fontSize: 15,
+      fontSize: isAndroid ? 15 : normalizeFont(15),
       fontWeight: "500",
       textAlign: "left",
       height: 54,

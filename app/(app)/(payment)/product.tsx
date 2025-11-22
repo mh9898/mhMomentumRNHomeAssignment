@@ -1,4 +1,5 @@
 import AppButton from "@/components/AppButton";
+import AppText from "@/components/AppText";
 import PlanCard from "@/components/PlanCard";
 import PromoCodeSection from "@/components/PromoCodeSection";
 import { Colors, Fonts } from "@/constants/theme";
@@ -42,7 +43,7 @@ const ProductScreen = () => {
       >
         <View style={styles.content}>
           {/* Title */}
-          <Text style={styles.title}>Choose the best plan for you</Text>
+          <AppText style={styles.title}>Choose the best plan for you</AppText>
 
           {/* Promo Code Section */}
           {promoCode && isDiscountActive && (

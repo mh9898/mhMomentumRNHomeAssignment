@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import React, { useMemo } from "react";
+import { StyleSheet, View } from "react-native";
+import AppText from "./AppText";
 
 interface PlanCardProps {
   displayPrice: number;
@@ -36,45 +37,45 @@ export default function PlanCard({
       <View style={styles.planHeader}>
         <View style={styles.planLeft}>
           <View style={styles.planInfo}>
-            <Text style={styles.planTitle}>4 WEEK PLAN</Text>
+            <AppText style={styles.planTitle}>4 WEEK PLAN</AppText>
             <View style={styles.priceContainer}>
               {isDiscountActive && (
-                <Text
+                <AppText
                   style={styles.originalPrice}
                   accessibilityLabel={`Original price ${originalPrice.toFixed(
                     2
                   )} USD`}
                 >
                   {originalPrice.toFixed(2)} USD
-                </Text>
+                </AppText>
               )}
-              <Text
+              <AppText
                 style={styles.currentPrice}
                 accessibilityLabel={`Current price ${displayPrice.toFixed(
                   2
                 )} USD`}
               >
                 {displayPrice.toFixed(2)} USD
-              </Text>
+              </AppText>
             </View>
           </View>
         </View>
         <View style={styles.planRight}>
           <View style={styles.dailyPriceContainer}>
-            <Text
+            <AppText
               style={styles.dailyPriceNumber}
               accessibilityLabel={`Daily price ${dailyPrice}`}
             >
               {dailyPrice}
-            </Text>
-            <Text style={styles.dailyPriceCurrency}>USD</Text>
+            </AppText>
+            <AppText style={styles.dailyPriceCurrency}>USD</AppText>
           </View>
-          <Text style={styles.dailyLabel}>per day</Text>
+          <AppText style={styles.dailyLabel}>per day</AppText>
         </View>
       </View>
 
       <View style={styles.popularBanner}>
-        <Text style={styles.popularText}>MOST POPULAR</Text>
+        <AppText style={styles.popularText}>MOST POPULAR</AppText>
       </View>
     </View>
   );
@@ -163,7 +164,6 @@ const createStyles = (colors: typeof Colors.light) => {
       fontSize: 20,
       fontWeight: "700",
       color: colors.text,
-      lineHeight: 28,
     },
     dailyPriceCurrency: {
       fontFamily: Fonts.gothicA1SemiBold,
@@ -191,6 +191,7 @@ const createStyles = (colors: typeof Colors.light) => {
       justifyContent: "center",
     },
     popularText: {
+      fontFamily: Fonts.gothicA1Bold,
       fontSize: 12,
       fontWeight: "700",
       color: colors.popularBannerText,

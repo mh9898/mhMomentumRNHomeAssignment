@@ -1,12 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
-import React from "react";
-import { Alert } from "react-native";
 import CheckoutScreen from "@/app/(app)/(payment)/checkout";
 import { usePaymentForm } from "@/hooks/use-payment-form";
 import { useProductPricing } from "@/hooks/use-product-pricing";
 import { usePromoCode } from "@/hooks/use-promo-code";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { usePaymentStore } from "@/store/paymentStore";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import React from "react";
+import { Alert } from "react-native";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({
@@ -194,11 +194,10 @@ describe("CheckoutScreen", () => {
 
     render(<CheckoutScreen />);
 
-    const buyNowButton = screen.getByText("Buy Now");
-    const touchableOpacity = buyNowButton.parent?.parent;
+    const buyNowButton = screen.getByLabelText("Buy Now");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      buyNowButton?.props?.disabled ||
+      buyNowButton?.props?.accessibilityState?.disabled;
 
     expect(isDisabled).toBeTruthy();
   });
@@ -222,11 +221,10 @@ describe("CheckoutScreen", () => {
 
     render(<CheckoutScreen />);
 
-    const buyNowButton = screen.getByText("Buy Now");
-    const touchableOpacity = buyNowButton.parent?.parent;
+    const buyNowButton = screen.getByLabelText("Buy Now");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      buyNowButton?.props?.disabled ||
+      buyNowButton?.props?.accessibilityState?.disabled;
 
     expect(isDisabled).toBeFalsy();
   });

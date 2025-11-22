@@ -1,3 +1,6 @@
+import NameScreen from "@/app/(app)/(payment)/name";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { usePaymentStore } from "@/store/paymentStore";
 import {
   fireEvent,
   render,
@@ -6,9 +9,6 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import NameScreen from "@/app/(app)/(payment)/name";
-import { useThemeColors } from "@/hooks/use-theme-colors";
-import { usePaymentStore } from "@/store/paymentStore";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({
@@ -100,11 +100,11 @@ describe("NameScreen", () => {
       expect(screen.getByText("Name must be at least 3 letters")).toBeTruthy();
     });
 
-    // Get the parent TouchableOpacity to check disabled state
-    const touchableOpacity = continueButton.parent?.parent;
+    // Get the button by accessibility label
+    const continueButtonElement = screen.getByLabelText("Continue");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      continueButtonElement?.props?.disabled ||
+      continueButtonElement?.props?.accessibilityState?.disabled;
 
     // Button should be disabled
     expect(isDisabled).toBeTruthy();
@@ -131,11 +131,11 @@ describe("NameScreen", () => {
       expect(screen.queryByText("Name must be at least 3 letters")).toBeNull();
     });
 
-    // Get the parent TouchableOpacity to check disabled state
-    const touchableOpacity = continueButton.parent?.parent;
+    // Get the button by accessibility label
+    const continueButtonElement = screen.getByLabelText("Continue");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      continueButtonElement?.props?.disabled ||
+      continueButtonElement?.props?.accessibilityState?.disabled;
 
     // Button should be enabled
     expect(isDisabled).toBeFalsy();
@@ -168,11 +168,11 @@ describe("NameScreen", () => {
       expect(screen.queryByText("Name must be at least 3 letters")).toBeNull();
     });
 
-    // Button should be enabled
-    const touchableOpacity = continueButton.parent?.parent;
+    // Get the button by accessibility label
+    const continueButtonElement = screen.getByLabelText("Continue");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      continueButtonElement?.props?.disabled ||
+      continueButtonElement?.props?.accessibilityState?.disabled;
     expect(isDisabled).toBeFalsy();
   });
 
