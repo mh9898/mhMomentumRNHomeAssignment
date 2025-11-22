@@ -1,9 +1,10 @@
+import AppText from "@/components/AppText";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { normalizeFont } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
 import {
   StyleSheet,
-  Text,
   TextInput,
   TextInputProps,
   View,
@@ -40,7 +41,7 @@ export default function AppTextInput({
         placeholderTextColor={error ? colors.error : colors.icon}
         {...textInputProps}
       />
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <AppText style={styles.errorText}>{error}</AppText>}
     </View>
   );
 }
@@ -49,9 +50,12 @@ const createStyles = (
   colors: typeof Colors.light,
   error?: string | null,
   isValid?: boolean,
-  fontSize: number = 16,
+  fontSize: number = 26,
   fontFamily?: string
 ) => {
+  const responsiveInputFontSize = normalizeFont(fontSize);
+  const responsiveErrorFontSize = normalizeFont(18);
+
   return StyleSheet.create({
     inputContainer: {
       marginBottom: 16,
@@ -64,7 +68,7 @@ const createStyles = (
         ? colors.text
         : colors.border,
       paddingVertical: 12,
-      fontSize,
+      fontSize: responsiveInputFontSize,
       fontFamily,
       color: colors.text,
       backgroundColor: error ? colors.errorBackground : colors.background,
@@ -73,7 +77,7 @@ const createStyles = (
     errorText: {
       fontFamily: Fonts.gothicA1SemiBold,
       color: colors.error,
-      fontSize: 14,
+      fontSize: responsiveErrorFontSize,
       marginTop: 8,
       textAlign: "center",
     },

@@ -1,7 +1,8 @@
+import AppTextLines from "@/components/AppTextLines";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
-import { StyleSheet, Text, TextProps, TextStyle } from "react-native";
+import { StyleSheet, TextProps, TextStyle } from "react-native";
 
 interface ScreenTitleProps extends Omit<TextProps, "style"> {
   children: React.ReactNode;
@@ -38,9 +39,15 @@ export default function AppTitle({
   );
 
   return (
-    <Text style={[styles.title, style]} {...textProps}>
+    <AppTextLines
+      style={style ? [styles.title, style] : styles.title}
+      lineHeight={lineHeight}
+      adjustsFontSizeToFit={textProps.adjustsFontSizeToFit}
+      minimumFontScale={textProps.minimumFontScale}
+      {...textProps}
+    >
       {children}
-    </Text>
+    </AppTextLines>
   );
 }
 
@@ -59,7 +66,7 @@ const createStyles = (
       fontWeight: "600",
       color: colors.text,
       textAlign,
-      lineHeight: lineHeight || fontSize * 1.3,
+      // lineHeight is handled by AppText component
       ...(margin !== undefined ? { margin } : { marginBottom }),
     },
   });

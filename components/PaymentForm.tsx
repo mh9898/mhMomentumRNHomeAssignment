@@ -1,6 +1,7 @@
 import AppTextInput from "@/components/AppTextInput";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { normalizeFont } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
@@ -127,7 +128,7 @@ const createStyles = (
     },
     cardNumberInput: {
       fontFamily: Fonts.gothicA1Medium,
-      fontSize: 15,
+      fontSize: normalizeFont(15),
       fontWeight: "500",
       paddingRight: 50,
       textAlign: "left",
@@ -161,7 +162,7 @@ const createStyles = (
     },
     halfInput: {
       fontFamily: Fonts.gothicA1Medium,
-      fontSize: 15,
+      fontSize: normalizeFont(15),
       fontWeight: "500",
       textAlign: "left",
       height: 54,
@@ -173,7 +174,7 @@ const createStyles = (
     },
     nameOnCardInput: {
       fontFamily: Fonts.gothicA1Medium,
-      fontSize: 15,
+      fontSize: normalizeFont(15),
       fontWeight: "500",
       textAlign: "left",
       height: 54,

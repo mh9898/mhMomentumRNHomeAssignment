@@ -1,7 +1,9 @@
+import AppTextLines from "@/components/AppTextLines";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { isSmallScreen, normalizeFont } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
-import { Image, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Image, StyleSheet, View, ViewStyle } from "react-native";
 
 const lockIcon = require("@/assets/icons/icon_lock_gray.png");
 
@@ -10,6 +12,7 @@ interface PrivacyStatementProps {
   marginTop?: number;
   marginBottom?: number;
   style?: ViewStyle;
+  numberOfLines?: number;
 }
 
 const DEFAULT_TEXT =
@@ -17,9 +20,10 @@ const DEFAULT_TEXT =
 
 export default function PrivacyStatement({
   text = DEFAULT_TEXT,
-  marginTop = 24,
+  marginTop = 20,
   marginBottom = 32,
   style,
+  numberOfLines,
 }: PrivacyStatementProps) {
   const colors = useThemeColors();
   const styles = useMemo(
@@ -31,7 +35,9 @@ export default function PrivacyStatement({
     <View style={[styles.container, style]}>
       <View style={styles.content}>
         <Image source={lockIcon} style={styles.lockIcon} resizeMode="contain" />
-        <Text style={styles.text}>{text}</Text>
+        <AppTextLines style={styles.text} numberOfLines={numberOfLines}>
+          {text}
+        </AppTextLines>
       </View>
     </View>
   );
@@ -55,14 +61,14 @@ const createStyles = (
       width: 14,
       height: 14,
       marginRight: 6,
-      marginTop: 2,
+      marginTop: isSmallScreen() ? 5 : 0,
       tintColor: colors.icon,
     },
     text: {
       fontFamily: Fonts.gothicA1SemiBold,
       fontSize: 13,
       color: colors.textPrivacyStatement,
-      lineHeight: 18,
+      lineHeight: normalizeFont(18),
       flex: 1,
     },
   });

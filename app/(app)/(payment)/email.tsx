@@ -53,9 +53,10 @@ const EmailScreen = () => {
       <View style={styles.content}>
         {/* Title */}
         <AppTitle
-          fontSize={Platform.OS === "android" ? 24 : 26}
-          lineHeight={34}
+          fontSize={26}
           numberOfLines={3}
+          // adjustsFontSizeToFit
+          // minimumFontScale={0.75}
         >
           Enter your email to get your personalized Calisthenics Workout Plan
         </AppTitle>
@@ -76,7 +77,7 @@ const EmailScreen = () => {
         />
 
         {/* Privacy Statement */}
-        <PrivacyStatement />
+        <PrivacyStatement numberOfLines={3} />
 
         {/* Continue Button */}
         <AppButton

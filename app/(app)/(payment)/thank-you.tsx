@@ -1,3 +1,4 @@
+import AppText from "@/components/AppText";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { router } from "expo-router";
@@ -7,7 +8,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 
@@ -32,15 +32,7 @@ const ThankYouScreen = () => {
       >
         <View style={styles.content}>
           {/* Title */}
-          <Text style={styles.title}>Thank You</Text>
-          {/* CTA Button for debugging */}
-          {/* <View style={styles.buttonContainer}>
-            <AppButton
-              title="Continue"
-              onPress={handleContinue}
-              accessibilityLabel="Continue"
-            />
-          </View> */}
+          <AppText style={styles.title}>Thank You</AppText>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

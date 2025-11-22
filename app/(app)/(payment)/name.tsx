@@ -57,11 +57,7 @@ const NameScreen = () => {
     >
       <View style={styles.content}>
         {/* Title */}
-        <AppTitle
-          fontSize={Platform.OS === "android" ? 24 : 26}
-          lineHeight={34}
-          numberOfLines={3}
-        >
+        <AppTitle fontSize={26} numberOfLines={3}>
           Enter your name to get your personalized Calisthenics Workout Plan
         </AppTitle>
 
@@ -80,7 +76,7 @@ const NameScreen = () => {
         />
 
         {/* Privacy Statement */}
-        <PrivacyStatement />
+        <PrivacyStatement numberOfLines={3} />
 
         {/* Continue Button */}
         <AppButton

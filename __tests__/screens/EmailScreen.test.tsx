@@ -1,3 +1,5 @@
+import EmailScreen from "@/app/(app)/(payment)/email";
+import { usePaymentStore } from "@/store/paymentStore";
 import {
   fireEvent,
   render,
@@ -6,8 +8,6 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import EmailScreen from "@/app/(app)/(payment)/email";
-import { usePaymentStore } from "@/store/paymentStore";
 
 // Mock expo-router
 jest.mock("expo-router", () => ({
@@ -28,7 +28,7 @@ describe("EmailScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (usePaymentStore as jest.Mock).mockReturnValue({
+    (usePaymentStore as unknown as jest.Mock).mockReturnValue({
       email: mockEmail,
       setEmail: mockSetEmail,
       logMMKV_Zustand: mockLogMMKV_Zustand,
@@ -65,11 +65,11 @@ describe("EmailScreen", () => {
       expect(screen.getByText("Please enter a valid email")).toBeTruthy();
     });
 
-    // Get the parent TouchableOpacity to check disabled state
-    const touchableOpacity = continueButton.parent?.parent;
+    // Get the button by accessibility label
+    const continueButtonElement = screen.getByLabelText("Continue");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      continueButtonElement?.props?.disabled ||
+      continueButtonElement?.props?.accessibilityState?.disabled;
 
     // Button should be disabled
     expect(isDisabled).toBeTruthy();
@@ -95,11 +95,11 @@ describe("EmailScreen", () => {
       expect(screen.queryByText("Please enter a valid email")).toBeNull();
     });
 
-    // Get the parent TouchableOpacity to check disabled state
-    const touchableOpacity = continueButton.parent?.parent;
+    // Get the button by accessibility label
+    const continueButtonElement = screen.getByLabelText("Continue");
     const isDisabled =
-      touchableOpacity?.props?.disabled ||
-      touchableOpacity?.props?.accessibilityState?.disabled;
+      continueButtonElement?.props?.disabled ||
+      continueButtonElement?.props?.accessibilityState?.disabled;
 
     // Button should be enabled
     expect(isDisabled).toBeFalsy();

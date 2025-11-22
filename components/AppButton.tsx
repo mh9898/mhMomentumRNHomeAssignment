@@ -1,14 +1,15 @@
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { normalize } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
 import {
   Image,
   ImageSourcePropType,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import AppText from "./AppText";
 
 interface AppButtonProps extends Omit<TouchableOpacityProps, "style"> {
   title: string;
@@ -46,9 +47,14 @@ export default function AppButton({
       accessibilityState={{ disabled }}
       {...touchableOpacityProps}
     >
-      <Text style={[styles.buttonText, disabled && styles.buttonTextDisabled]}>
+      <AppText
+        style={[
+          styles.buttonText,
+          ...(disabled ? [styles.buttonTextDisabled] : []),
+        ]}
+      >
         {title}
-      </Text>
+      </AppText>
       {icon ? (
         <Image
           source={icon}
@@ -56,17 +62,23 @@ export default function AppButton({
           resizeMode="contain"
         />
       ) : showArrow ? (
-        <Text
-          style={[styles.buttonArrow, disabled && styles.buttonTextDisabled]}
+        <AppText
+          style={[
+            styles.buttonArrow,
+            ...(disabled ? [styles.buttonTextDisabled] : []),
+          ]}
         >
           →
-        </Text>
+        </AppText>
       ) : null}
     </TouchableOpacity>
   );
 }
 
 const createStyles = (colors: typeof Colors.light, disabled: boolean) => {
+  const buttonTextSize = normalize(16);
+  const buttonArrowSize = normalize(20);
+
   return StyleSheet.create({
     button: {
       backgroundColor: colors.buttonBackground,
@@ -85,7 +97,7 @@ const createStyles = (colors: typeof Colors.light, disabled: boolean) => {
     buttonText: {
       fontFamily: Fonts.gothicA1Medium,
       color: colors.buttonText,
-      fontSize: 16,
+      fontSize: buttonTextSize,
       fontWeight: "500",
       marginRight: 8,
     },
@@ -94,7 +106,7 @@ const createStyles = (colors: typeof Colors.light, disabled: boolean) => {
     },
     buttonArrow: {
       color: colors.text,
-      fontSize: 20,
+      fontSize: buttonArrowSize,
       fontWeight: "600",
     },
     buttonIcon: {

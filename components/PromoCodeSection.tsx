@@ -1,7 +1,9 @@
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { normalizeFont } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import AppText from "./AppText";
 
 const couponIcon = require("@/assets/icons/icon_coupon_green.png");
 
@@ -32,7 +34,9 @@ export default function PromoCodeSection({
           resizeMode="contain"
           accessibilityLabel="Promo code icon"
         />
-        <Text style={styles.promoBannerText}>Your Promo Code is Applied!</Text>
+        <AppText style={styles.promoBannerText}>
+          Your Promo Code is Applied!
+        </AppText>
       </View>
 
       {/* Dashed Separator */}
@@ -54,10 +58,10 @@ export default function PromoCodeSection({
           accessibilityRole="text"
           accessibilityLabel={`Promo code ${promoCode}`}
         >
-          <Text style={styles.checkmark} accessibilityLabel="Applied">
+          <AppText style={styles.checkmark} accessibilityLabel="Applied">
             ✓
-          </Text>
-          <Text style={styles.promoCodeText}>{promoCode}</Text>
+          </AppText>
+          <AppText style={styles.promoCodeText}>{promoCode}</AppText>
         </View>
 
         {/* Timer */}
@@ -66,12 +70,12 @@ export default function PromoCodeSection({
           accessibilityRole="timer"
           accessibilityLabel={`Time remaining ${minutes} minutes ${seconds} seconds`}
         >
-          <Text style={styles.timerText}>
+          <AppText style={styles.timerText}>
             {minutes} : {seconds}
-          </Text>
+          </AppText>
           <View style={styles.timerLabels}>
-            <Text style={styles.timerLabel}>minutes</Text>
-            <Text style={styles.timerLabel}>seconds</Text>
+            <AppText style={styles.timerLabel}>minutes</AppText>
+            <AppText style={styles.timerLabel}>seconds</AppText>
           </View>
         </View>
       </View>
@@ -102,7 +106,7 @@ const createStyles = (colors: typeof Colors.light) => {
       marginRight: 8,
     },
     promoBannerText: {
-      fontSize: 18,
+      fontSize: normalizeFont(18),
       fontWeight: "700",
       fontFamily: Fonts.gothicA1Bold,
       color: colors.text,

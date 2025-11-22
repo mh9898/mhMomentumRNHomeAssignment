@@ -1,3 +1,4 @@
+import AppText from "@/components/AppText";
 import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import React, { useMemo } from "react";
@@ -5,7 +6,6 @@ import {
   ActivityIndicator,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
 } from "react-native";
 
@@ -29,7 +29,10 @@ export default function BuyNowButton({
 
   return (
     <TouchableOpacity
-      style={[styles.buyNowButton, isDisabled && styles.buyNowButtonDisabled]}
+      style={[
+        styles.buyNowButton,
+        ...(isDisabled ? [styles.buyNowButtonDisabled] : []),
+      ]}
       onPress={onPress}
       disabled={isDisabled}
       accessibilityLabel="Buy Now"
@@ -40,11 +43,14 @@ export default function BuyNowButton({
       ) : (
         <Image source={lockIcon} style={styles.lockIcon} resizeMode="contain" />
       )}
-      <Text
-        style={[styles.buyNowText, isDisabled && styles.buyNowTextDisabled]}
+      <AppText
+        style={[
+          styles.buyNowText,
+          ...(isDisabled ? [styles.buyNowTextDisabled] : []),
+        ]}
       >
         {loading ? "Processing..." : "Buy Now"}
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 }
@@ -68,10 +74,11 @@ const createStyles = (colors: typeof Colors.light) => {
       marginRight: 8,
     },
     buyNowText: {
-      color: colors.buttonText,
+      color: "#FFFFFF",
       fontSize: 16,
       fontWeight: "600",
       fontFamily: Fonts.gothicA1SemiBold,
+      textAlign: "justify",
     },
     buyNowTextDisabled: {
       color: colors.icon,
