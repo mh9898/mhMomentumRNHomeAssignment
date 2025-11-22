@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   checkoutHeaderText: {
     fontFamily: Fonts.gothicA1SemiBold,
-    fontSize: normalizeFont(20),
+    fontSize: Platform.OS === "android" ? 20 : normalizeFont(20),
     fontWeight: "bold",
   },
 });

@@ -1,6 +1,6 @@
 import { responsiveFontSize } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
-import { StyleSheet, Text, TextProps, TextStyle } from "react-native";
+import { Platform, StyleSheet, Text, TextProps, TextStyle } from "react-native";
 
 interface AppTextProps extends TextProps {
   children: React.ReactNode;
@@ -24,6 +24,8 @@ export default function AppText({
   minimumFontScale = 0.75,
   ...textProps
 }: AppTextProps) {
+  const isAndroid = Platform.OS === "android";
+
   // Process style to apply responsive font sizing
   const processedStyle = useMemo(() => {
     if (!style) return {};
@@ -35,11 +37,17 @@ export default function AppText({
 
     // Apply responsive font size if fontSize is provided
     if (mergedStyle.fontSize) {
-      processed.fontSize = responsiveFontSize(mergedStyle.fontSize);
+      if (isAndroid) {
+        // Android-specific: apply responsive font size and then reduce by 5% for better fit
+        processed.fontSize = responsiveFontSize(mergedStyle.fontSize) * 2;
+      } else {
+        // iOS logic remains unchanged
+        processed.fontSize = responsiveFontSize(mergedStyle.fontSize);
+      }
     }
 
     return processed;
-  }, [style]);
+  }, [style, isAndroid]);
 
   const styles = useMemo(() => {
     return StyleSheet.create({

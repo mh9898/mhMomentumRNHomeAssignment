@@ -3,7 +3,7 @@ import { Colors, Fonts } from "@/constants/theme";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { isSmallScreen, normalizeFont } from "@/utils/responsiveText";
 import React, { useMemo } from "react";
-import { Image, StyleSheet, View, ViewStyle } from "react-native";
+import { Image, Platform, StyleSheet, View, ViewStyle } from "react-native";
 
 const lockIcon = require("@/assets/icons/icon_lock_gray.png");
 
@@ -48,6 +48,17 @@ const createStyles = (
   marginTop: number,
   marginBottom: number
 ) => {
+  const isAndroid = Platform.OS === "android";
+
+  // Android-specific fontSize and lineHeight adjustments
+  const baseFontSize = 13;
+  const baseLineHeight = 18;
+
+  const fontSize = isAndroid ? baseFontSize * 2 : baseFontSize;
+  const lineHeight = isAndroid
+    ? normalizeFont(baseLineHeight) * 2
+    : normalizeFont(baseLineHeight);
+
   return StyleSheet.create({
     container: {
       marginTop,
@@ -61,14 +72,14 @@ const createStyles = (
       width: 14,
       height: 14,
       marginRight: 6,
-      marginTop: isSmallScreen() ? 5 : 0,
+      marginTop: isAndroid ? 0 : isSmallScreen() ? 5 : 0,
       tintColor: colors.icon,
     },
     text: {
       fontFamily: Fonts.gothicA1SemiBold,
-      fontSize: 13,
+      fontSize,
       color: colors.textPrivacyStatement,
-      lineHeight: normalizeFont(18),
+      lineHeight,
       flex: 1,
     },
   });
